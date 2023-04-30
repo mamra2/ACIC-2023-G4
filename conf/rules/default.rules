@@ -55,15 +55,6 @@ rule "Send e-mail"
 end
 
 // IFTTT
-rule "Set initial values for IFTTT items"
-    when
-	    System started
-    then
-    	createTimer(now.plusSeconds(160)) [|
-	    	logInfo("RULE", "Set initial values IFTTT items")
-		    postUpdate(Wallplug_Hall, 0)
-	]
-end
 rule "Send IFTTT Notification"
     when
         Item Test_Switch received update
