@@ -1,0 +1,88 @@
+// Device & Wallpug
+rule "Toggle Wallplug"
+    when
+        Item MyDeviceIsOnline changed
+    then
+        Wallplug_Hall.sendCommand(MyDeviceIsOnline.state.toString)
+end
+
+// Telegram
+rule "Receive Message (on Telegram)"
+    when 
+        //Change this trigger message
+        Item Telegram_Message received update "message test"
+    then
+        var message = Telegram_Message.state.toString
+        val bot = getActions("telegram","telegram:telegramBot:telegrambot")
+        if (message == "ON" || message == "OFF") {
+            Test_Switch.sendCommand(message)
+            bot.sendTelegram("Switch changed state to " + message)
+        }
+        else {
+            bot.sendTelegram("Switch didn't change state because the message sent was \n\"" + message + "\"")
+        }
+end
+rule "Query (on Telegram)"
+    when
+        //Change this trigger message
+        Item Telegram_Message received update "reply test"
+    then
+        val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
+        telegramBot.sendTelegramQuery("Do you also want to receive a notification through e-mail?", "Telegram_Reply", "Yes", "No")
+end
+rule "Reply (on Telegram)"
+    when
+        Item Telegram_ReplyId received update "Telegram_Reply"
+    then
+        val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot") 
+        var message = Telegram_Message.state.toString
+        var notificationConfirmation = (
+            if (message == "Yes") ("E-mail") 
+            else if (message == "No") ("No"))
+        telegramBot.sendTelegramAnswer(Telegram_ReplyId.state.toString, notificationConfirmation + " notification was sent.")
+end
+
+// Mail
+rule "Send e-mail"
+    when 
+        Item Test_Switch received update
+    then
+        val receiver = "mamra2@iscte-iul.pt"
+        val mailSubject = "[ACIC] openHAB (Teste de Laboratório)"
+        val mailContent = "Para efeitos de laboratório, envia-se esta mensagem."
+        val mailActions = getActions("mail","mail:smtp:smtp")
+        mailActions.sendMail(receiver, mailSubject, mailContent)
+end
+
+// IFTTT
+rule "Set initial values for IFTTT items"
+    when
+	    System started
+    then
+    	createTimer(now.plusSeconds(160)) [|
+	    	logInfo("RULE", "Set initial values IFTTT items")
+		    postUpdate(Wallplug_Hall, 0)
+	]
+end
+rule "Send IFTTT Notification"
+    when
+        Item Test_Switch received update
+    then
+        logInfo("LineBlock","\n" 
+            + "//======================================================================================================================================================//")
+        // Item Values
+        var item = Test_Switch
+        var itemName = item.name
+        var itemState = item.state
+
+        // IFTTT parameters
+        var String ifttt_event = 'OH_Alarm'
+        var String ifttt_key = 'opv4AxqQo6hB48Td9nep-E_Y4SKpDPUHNLAkO2izXCx'
+        var String ifttt_values = '?value1=' + itemName + '&value2=' + itemState
+        var String ifttt_url = 'https://maker.ifttt.com/trigger/' + ifttt_event + '/with/key/' + ifttt_key + ifttt_values
+
+        // POST HTTP Request
+        sendHttpPostRequest(ifttt_url)
+        logInfo("IFTT", "IFTTT Notification => " + "Item {} has state {}.", itemName, itemState)
+        logInfo("URL", "Sent to \nURL \"{}\"", ifttt_url)
+end

@@ -1,0 +1,27 @@
+sitemap default label="Main Menu" {
+    // For Testing Purposes
+    Frame label="Testing Laboratory" {
+        Switch item=Test_Switch
+        Text item=MyDeviceIsOnline
+        Switch item=Wallplug_Hall
+        Default item=Sensor1
+    }
+    Frame label="Lights" icon="light" {
+        Group item=BedroomBulb
+        Switch item=Light_Switch
+        Selection item=Light_Scene 
+            mappings=[
+                "xilq3BY6P5fK-QZ"="Galaxy", 
+                "Hyc749a5uce5AvC"="Starlight", 
+                "dlsWwGftKq61u6q"="Tokyo"
+            ]
+        Slider item=Light_Color_Temperature sendFrequency=2000
+        Slider item=Con_Light_Dimmer
+    }
+    Frame label="Services" icon="mediacontrol" {
+        Group item=WebService
+    }
+    Frame label="Device" icon="projector" {
+        Group item=Home
+    }
+}

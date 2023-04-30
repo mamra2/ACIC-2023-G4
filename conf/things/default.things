@@ -1,0 +1,84 @@
+// Device
+Thing network:pingdevice:mydevice "MobileDevice" [ 
+    hostname="192.168.1.66", 
+    refreshInterval=2000
+]
+
+// Telegram
+Thing telegram:telegramBot:telegrambot [ 
+    chatIds="1692342549", 
+    botToken="6015714713:AAHb3KgNHc1XvKgi6ZXAdELo46cg9slDcIw" 
+]
+
+// Mail
+Thing mail:smtp:smtp [ 
+    hostname="smtp.gmail.com", 
+    sender="miguelromana93@gmail.com",
+    security="STARTTLS", 
+    username="miguelromana93@gmail.com", 
+    password="vhjy fdes hyxa mmev" 
+]
+
+// iCalendar
+Bridge icalendar:calendar:calendar "Calendar" [ 
+    url="http://fenix.iscte-iul.pt/publico/publicPersonICalendar.do?method=iCalendar&username=mamra2@iscte.pt&password=05dTXEEs6wyMIJjfehDDoCIaT4ocwzRXfdACxzxWcdnmg1P5ffe80MkoNHrEhi2qpiOPJaHSOdEG6SihppHv6L7iHlI5X4D0RbNwTTvIHWwvWKayMmn8nlalaiwgehKO", 
+    refreshTime=1 
+]
+Thing icalendar:eventfilter:filter "Calendar Filter" (icalendar:calendar:calendar) [ 
+    maxEvents=3, refreshTime=1, datetimeUnit="DAY", datetimeStart=1, datetimeEnd=2, datetimeRound=true 
+]
+
+// Astro
+Thing astro:sun:home [ 
+    geolocation="38.74909954079374,-9.153553816217409", 
+    interval=60 
+]
+Thing astro:moon:home [ 
+    geolocation="38.74909954079374,-9.153553816217409", 
+    interval=60 
+]
+
+// OpenWeather
+Bridge openweathermap:weather-api:api "OpenWeatherMap" [ 
+    apikey="61e15bbe4b61b17ef5a98b672f8f4efa", 
+    refreshInterval=60, 
+    language="en" 
+    ] { 
+        Thing weather-and-forecast local "Local Weather And Forecast" [ 
+            location="38.74909954079374,-9.153553816217409", 
+            forecastHours=24, 
+            forecastDays=7 
+        ]
+}
+
+// Lights
+Bridge hue:bridge:mybridge [ 
+    ipAddress="192.168.8.193", 
+    userName="qi52KySKTZ9dBb3lYkSCi17povASXFGsxqT3-qmH",
+    protocol="http" //is it really needed (with router?)?
+] { 
+    group bed-bulbs "Bedroom Bulbs" [groupId="2"]
+    0210 bulb1 "Bulb 1" [lightId="5"]
+    0220 bulb2 "Bulb 2" [lightId="4"]
+}
+
+// ConBee
+Bridge deconz:deconz:homeserver [ 
+    host="172.26.160.1", 
+    apikey="F58F8E5B05"
+] { 
+    dimmablelight tradfor "Tradfor" [id="2"]
+    dimmablelight phue-amb "PHue Ambiance" [id="4"]    
+}
+
+// Z-Stick
+Bridge zwave:serial_zstick:controller "ZWave Controller" [ 
+    port="/dev/ttyACM4", 
+    controller_softreset="false", 
+    controller_master="true", 
+    heal_enable="true", 
+    security_networkkey="Olhaafoto" 
+] {
+	fibaro_fgms001_03_002 sensor1 "Sensor 1" [node_id=3]
+	aeon_zw130_00_000 wallcontroller1 "Wall Controller 1" [node_id=4]	
+}
