@@ -10,6 +10,14 @@ Thing telegram:telegramBot:telegrambot [
     botToken="6015714713:AAHb3KgNHc1XvKgi6ZXAdELo46cg9slDcIw" 
 ]
 
+// Twitter
+Thing twitter:account:account [ 
+    consumerKey="n7kbQsVD7pYJSEzec9cIWimhP", 
+    consumerSecret="wukiJPpfguxfO1GkrbsIAldwlcEy58Lw4uqKTV3m1ehkyfQuyt", 
+    accessToken="715177321746014209-2b6UHmg58Ph3tx8tlJoMS6BrnytKKTo", 
+    accessTokenSecret="3na6UjUtngasqQ5xoFpp9Gcjgx5oT7PQRoka6qY7j4H3Z" 
+]
+
 // Mail
 Thing mail:smtp:smtp [ 
     hostname="smtp.gmail.com", 

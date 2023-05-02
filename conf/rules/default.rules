@@ -42,10 +42,23 @@ rule "Reply (on Telegram)"
         telegramBot.sendTelegramAnswer(Telegram_ReplyId.state.toString, notificationConfirmation + " notification was sent.")
 end
 
+// Twitter
+rule "Send DM (on Twitter)"
+    when
+        Item Test_Switch received update
+    then
+        val tweetActions = getActions("twitter","twitter:account:account")
+        // Send tweet
+        tweetActions.sendTweet("This is a new Tweet!")
+        // Send Twitter direct message
+        // TODO: Add "recipientID"
+        tweetActions.sendDirectMessage("recipientID", "This is a direct message!" )
+end
+
 // Mail
 rule "Send e-mail"
     when 
-        Item Test_Switch received update
+//        Item Test_Switch received update
     then
         val receiver = "mamra2@iscte-iul.pt"
         val mailSubject = "[ACIC] openHAB (Teste de Laboratório)"
@@ -57,7 +70,7 @@ end
 // IFTTT
 rule "Send IFTTT Notification"
     when
-        Item Test_Switch received update
+//        Item Test_Switch received update
     then
         logInfo("LineBlock","\n" 
             + "//======================================================================================================================================================//")
