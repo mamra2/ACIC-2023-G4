@@ -49,10 +49,10 @@ rule "Send DM (on Twitter)"
     then
         val tweetActions = getActions("twitter","twitter:account:account")
         // Send tweet
-        tweetActions.sendTweet("This is a new Tweet sent for a uni project!")
+        //tweetActions.sendTweet("This is a new Tweet sent for a uni project!")
         // Send Twitter direct message
         // TODO: Add "recipientID"
-        tweetActions.sendDirectMessage("recipientID", "This is a direct message!" )
+        tweetActions.sendDirectMessage("1479927354805862406", "This is a direct message!")
 end
 
 // Mail
