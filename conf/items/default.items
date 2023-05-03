@@ -127,3 +127,8 @@ Dimmer Con_Light_Dimmer "Con Light Dimmer" <wallswitch> (BedroomBulb) ["ColorTem
 Switch Sensor1 "Motion Sensor" <motion> (AlarmSystems, GroundFloor) ["MotionDetector"] { 
     channel="zwave:serial_zstick:controller:sensor1:alarm_motion"
 }
+
+// LoRa
+Number:Temperature Generic_MQTT_Thing_Air_Temperature "Air Temperature [%.1f ºC]" <temperature> (Indoor) ["Measurement", "Temperature"] { 
+    channel="mqtt:topic:generic:temperature" 
+}

@@ -5,6 +5,7 @@ sitemap default label="Main Menu" {
         Text item=MyDeviceIsOnline
         Switch item=Wallplug_Hall
         Default item=Sensor1
+        Default item=Generic_MQTT_Thing_Air_Temperature
     }
     Frame label="Lights" icon="light" {
         Group item=BedroomBulb
