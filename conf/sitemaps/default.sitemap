@@ -4,7 +4,7 @@ sitemap default label="Main Menu" {
         Switch item=Test_Switch
         Text item=MyDeviceIsOnline
         Switch item=Wallplug_Hall
-        Default item=Motion_Sensor
+        Group item=Z_Stick
     }
     Frame label="Lights" icon="light" {
         Group item=BedroomBulb

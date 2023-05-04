@@ -100,7 +100,7 @@ rule "Publish MQTT Topic"
         Item Test_Switch received update
 //        Item Telegram_Message received update "Publish MQTT topic"
     then
-        val topic = "v3/ttn-backdior-app@ttn/devices/eui-0025ca0a00014919/down/sent"
+        val topic = "v3/ttn-backdior-app@ttn/devices/eui-0025ca0a00014919/up"
         val value = "The temperature is " + LoRa_AirTemperature.state.toString
         logInfo("LoRa", "LoRa Air Temperature is {}", LoRa_AirTemperature.state.toString)
         val retained = true

@@ -23,6 +23,7 @@ Group WeatherService "Weather Service" <sun_clouds> (WebService) ["WeatherServic
 //Equipment
 Group Device "Device" <screen> (AlarmSystem) ["Smartphone"]
 Group LoRa "LoRaWAN" <sensor> (AlarmSystem) ["Sensor"]
+Group Z_Stick "Z-Stick" <sensor> (AlarmSystem) ["Sensor"]
 Group Application "Application" <screen> (WebService) ["WebService"]
 Group Activities "Activities" <party> (Application) ["WebService"]
 Group Telegram "Telegram" <flow> (Application) ["WebService"]
@@ -125,8 +126,14 @@ Dimmer Con_Light_Dimmer "Con Light Dimmer" <wallswitch> (BedroomBulb) ["ColorTem
 }
 
 // Z-Stick
-Switch Motion_Sensor "Motion Sensor" <motion> (AlarmSystems, GroundFloor) ["MotionDetector"] { 
-    channel="zwave:serial_zstick:controller:sensor1:alarm_motion"
+Contact Door_Sensor "Door Sensor" <frontdoor> (Z_Stick, GroundFloor) ["Measurement", "Presence"] { 
+    channel="zwave:fibaro_fgdw002_00_000:controller:door_sensor:sensor_door" 
+}
+Switch Motion_Alarm "Motion Alarm" <motion> (Z_Stick, FirstFloor) ["MotionDetector"] { 
+    channel="zwave:fibaro_fgms001_03_002:controller:motion_sensor:alarm_motion"
+}
+Switch WallMote_Button1 "WallMote Quad Button 1" <wallswitch> (Z_Stick, LivingRoom) ["Measurement", "Presence"] { 
+    channel="zwave:aeon_zw130_00_000:controller:wallmote:basic_switch_binary1" 
 }
 
 // LoRa

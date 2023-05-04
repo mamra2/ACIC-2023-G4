@@ -88,8 +88,9 @@ Bridge zwave:serial_zstick:controller "ZWave Controller" [
     heal_enable="true", 
     security_networkkey="Olhaafoto" 
 ] {
-	fibaro_fgms001_03_002 sensor1 "Sensor 1" [node_id=3]
-	aeon_zw130_00_000 wallcontroller1 "Wall Controller 1" [node_id=4] 
+    fibaro_fgdw002_00_000 door_sensor "Door/Window Sensor 2" [node_id=5]
+	fibaro_fgms001_03_002 motion_sensor "Motion Sensor" [node_id=3]
+	aeon_zw130_00_000 wallmote "WallMote Quad" [node_id=4]
 }
 
 // LoRa
