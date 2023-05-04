@@ -45,7 +45,8 @@ end
 // Twitter
 rule "Send DM (on Twitter)"
     when
-        Item Test_Switch received update
+//        Item Test_Switch received update
+        Item Telegram_Message received update "Send Twitter DM"
     then
         val tweetActions = getActions("twitter","twitter:account:account")
         // Send tweet
@@ -59,6 +60,7 @@ end
 rule "Send e-mail"
     when 
 //        Item Test_Switch received update
+        Item Telegram_Message received update "Send e-mail"
     then
         val receiver = "mamra2@iscte-iul.pt"
         val mailSubject = "[ACIC] openHAB (Teste de Laboratório)"
@@ -71,6 +73,7 @@ end
 rule "Send IFTTT Notification"
     when
 //        Item Test_Switch received update
+        Item Telegram_Message received update "Send IFTTT Notification"
     then
         logInfo("LineBlock","\n" 
             + "//======================================================================================================================================================//")
@@ -89,4 +92,18 @@ rule "Send IFTTT Notification"
         sendHttpPostRequest(ifttt_url)
         logInfo("IFTT", "IFTTT Notification => " + "Item {} has state {}.", itemName, itemState)
         logInfo("URL", "Sent to \nURL \"{}\"", ifttt_url)
+end
+
+// LoRa
+rule "Publish MQTT Topic"
+    when 
+        Item Test_Switch received update
+//        Item Telegram_Message received update "Publish MQTT topic"
+    then
+        val topic = "v3/ttn-backdior-app@ttn/devices/eui-0025ca0a00014919/down/sent"
+        val value = "The temperature is " + LoRa_AirTemperature.state.toString
+        logInfo("LoRa", "LoRa Air Temperature is {}", LoRa_AirTemperature.state.toString)
+        val retained = true
+        val mqttActions = getActions("mqtt","mqtt:broker:broker")
+        mqttActions.publishMQTT(topic, value, retained)
 end

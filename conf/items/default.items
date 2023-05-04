@@ -125,7 +125,7 @@ Dimmer Con_Light_Dimmer "Con Light Dimmer" <wallswitch> (BedroomBulb) ["ColorTem
 }
 
 // Z-Stick
-Switch Sensor1 "Motion Sensor" <motion> (AlarmSystems, GroundFloor) ["MotionDetector"] { 
+Switch Motion_Sensor "Motion Sensor" <motion> (AlarmSystems, GroundFloor) ["MotionDetector"] { 
     channel="zwave:serial_zstick:controller:sensor1:alarm_motion"
 }
 
