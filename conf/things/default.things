@@ -89,13 +89,13 @@ Bridge zwave:serial_zstick:controller "ZWave Controller" [
     security_networkkey="Olhaafoto" 
 ] {
 	fibaro_fgms001_03_002 sensor1 "Sensor 1" [node_id=3]
-	aeon_zw130_00_000 wallcontroller1 "Wall Controller 1" [node_id=4]	
+	aeon_zw130_00_000 wallcontroller1 "Wall Controller 1" [node_id=4] 
 }
 
 // LoRa
 Bridge mqtt:broker:broker "MQTT Broker" [
     host="eu1.cloud.thethings.network",
-    secure="false",
+    secure="true",
     enableDiscovery="false",
     username="ttn-backdior-app@ttn",
     password="NNSXS.L6WTTIK2XRNFGBEFATSJBKVDRPEBIZI4X3C422Y.2Z4JDROCO4FBC6M3QIL6YWIBWAVG2GYZ6YW3F6TSBIFBTFRAZXVQ"
@@ -104,6 +104,14 @@ Thing mqtt:topic:generic "Generic MQTT Thing" (mqtt:broker:broker) {
     Channels:
         Type number:temperature "Air Temperature" [ 
             stateTopic="v3/ttn-backdior-app@ttn/devices/eui-0025ca0a00014919/up",
-            transformationPattern="JSONPATH:$.temperature"
+            transformationPattern="JSONPATH:$.uplink_message.decoded_payload.temperature"
+        ]
+        Type number:humidity "Air Humidity" [ 
+            stateTopic="v3/ttn-backdior-app@ttn/devices/eui-0025ca0a00014919/up",
+            transformationPattern="JSONPATH:$.uplink_message.decoded_payload.humidity"
+        ]
+        Type string:battery "Battery Level" [ 
+            stateTopic="v3/ttn-backdior-app@ttn/devices/eui-0025ca0a00014919/up",
+            transformationPattern="JSONPATH:$.uplink_message.decoded_payload.batteryCapacity"
         ]
 }

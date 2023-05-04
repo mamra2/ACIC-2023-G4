@@ -22,6 +22,7 @@ Group WebService "Web Service" <qualityofservice> (AlarmSystem) ["WebService"]
 Group WeatherService "Weather Service" <sun_clouds> (WebService) ["WeatherService"]
 //Equipment
 Group Device "Device" <screen> (AlarmSystem) ["Smartphone"]
+Group LoRa "LoRaWAN" <sensor> (AlarmSystem) ["Sensor"]
 Group Application "Application" <screen> (WebService) ["WebService"]
 Group Activities "Activities" <party> (Application) ["WebService"]
 Group Telegram "Telegram" <flow> (Application) ["WebService"]
@@ -129,6 +130,12 @@ Switch Sensor1 "Motion Sensor" <motion> (AlarmSystems, GroundFloor) ["MotionDete
 }
 
 // LoRa
-Number:Temperature Generic_MQTT_Thing_Air_Temperature "Air Temperature [%.1f ºC]" <temperature> (Indoor) ["Measurement", "Temperature"] { 
+Number:Temperature LoRa_AirTemperature "Air Temperature [%.2f %unit%]" <temperature> (LoRa) ["Measurement", "Temperature"] { 
     channel="mqtt:topic:generic:temperature" 
+}
+Number LoRa_AirHumidity "Air Humidity [%.2f %%]" <humidity> (LoRa) ["Measurement", "Humidity"] { 
+    channel="mqtt:topic:generic:humidity" 
+}
+String LoRa_BatteryLevel "Battery Level" <batterylevel> (LoRa) ["Measurement", "Energy"] { 
+    channel="mqtt:topic:generic:battery" 
 }
