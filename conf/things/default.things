@@ -12,11 +12,11 @@ Thing telegram:telegramBot:telegrambot [
 
 // Twitter
 Thing twitter:account:account [ 
-    consumerKey="JQGSgb2jF8yNuaHhlHIGY8quY", 
-    consumerSecret="w79pMsuHkKfBxXKBL4q1wabc4MFpTJfVCNg7njBv5CYeQfv3C2", 
-    accessToken="715177321746014209-vp3oXHApTrSoTcGdwaiqH5pB37HRJD8", 
-    accessTokenSecret="pnTtIWaZb2khnxozqb8tKjcpWXtgzf1Bl5eqh2EyeNRFe", 
-    refresh=1
+    consumerKey="VELVTtKYGKyZhfsVJJAbOAkfw", 
+    consumerSecret="xVa2DCVa6dadZXsadB4LOXlOqYCHyvaQxC03YJmptbmqL4nKG7", 
+    accessToken="715177321746014209-3gw7KFBcTWhhXLI2e4pnRDQKeIzHJA2", 
+    accessTokenSecret="d6DkXUK4nNRA5SPnjcmlmUWAWoqHObNr9HUWOK9xmAcIu", 
+    refresh=5
 ]
 
 // Mail

@@ -21,6 +21,8 @@ rule "Receive Message (on Telegram)"
         else {
             bot.sendTelegram("Switch didn't change state because the message sent was \n\"" + message + "\"")
         }
+        // Send to Henrique
+        //bot.sendTelegram(5680556583L, "This is a message for you, Henrique!")
 end
 rule "Query (on Telegram)"
     when
@@ -43,17 +45,17 @@ rule "Reply (on Telegram)"
 end
 
 // Twitter
-rule "Send DM (on Twitter)"
+rule "Send tweet (on Twitter)"
     when
-//        Item Test_Switch received update
-        Item Telegram_Message received update "Send Twitter DM"
+        Item Test_Switch received update
+//        Item Telegram_Message received update "Send Tweet"
     then
         val tweetActions = getActions("twitter","twitter:account:account")
         // Send tweet
-        //tweetActions.sendTweet("This is a new Tweet sent for a uni project!")
-        // Send Twitter direct message
-        // TODO: Add "recipientID"
-        tweetActions.sendDirectMessage("1479927354805862406", "This is a direct message!")
+        val mention = "@openHAB"
+        val tweetMessage = "This is a new Tweet sent for a uni project " + "(with " + mention + ")"
+        tweetActions.sendTweet(tweetMessage)
+        logInfo("Twitter", "Twitter sent with message \"" + tweetMessage + "\"")
 end
 
 // Mail
@@ -97,8 +99,8 @@ end
 // LoRa
 rule "Publish MQTT Topic"
     when 
-        Item Test_Switch received update
-//        Item Telegram_Message received update "Publish MQTT topic"
+//        Item Test_Switch received update
+        Item Telegram_Message received update "Publish MQTT topic"
     then
         val topic = "v3/ttn-backdior-app@ttn/devices/eui-0025ca0a00014919/up"
         val value = "The temperature is " + LoRa_AirTemperature.state.toString
