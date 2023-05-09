@@ -23,6 +23,7 @@ Group WeatherService "Weather Service" <sun_clouds> (WebService) ["WeatherServic
 //Equipment
 Group Device "Device" <screen> (AlarmSystem) ["Smartphone"]
 Group LoRa "LoRaWAN" <sensor> (AlarmSystem) ["Sensor"]
+Group XBee "XBee" <sensor> (AlarmSystem) ["Sensor"]
 Group Z_Stick "Z-Stick" <sensor> (AlarmSystem) ["Sensor"]
 Group Application "Application" <screen> (WebService) ["WebService"]
 Group Activities "Activities" <party> (Application) ["WebService"]
@@ -146,3 +147,15 @@ Number LoRa_AirHumidity "Air Humidity [%.2f %%]" <humidity> (LoRa) ["Measurement
 String LoRa_BatteryLevel "Battery Level" <batterylevel> (LoRa) ["Measurement", "Energy"] { 
     channel="mqtt:topic:generic:battery" 
 }
+
+// XBee
+// Items to be used for serial communication (don't display data), linked to channels of the serialBridge binding Thing
+String XBeeString "XBee String" <light> (XBee) { 
+    channel="serial:serialBridge:xbeesensors:string"
+}
+String XBeeBinary "XBee Binary" <light> (XBee) { 
+    channel="serial:serialBridge:xbeesensors:binary"
+}
+// Items to be used/seen by end users
+Switch XBeeLed "XBee Led" <switch> (XBee) ["Switch", "Light"]
+Number:Temperature XBeeTemperature "XBee Temperature [%s %unit%]" <temperature> (XBee) ["Measurement", "Temperature"]

@@ -82,7 +82,7 @@ Bridge deconz:deconz:homeserver [
 
 // Z-Stick
 Bridge zwave:serial_zstick:controller "ZWave Controller" [ 
-    port="/dev/ttyACM4", 
+    port="COM4", 
     controller_softreset="false", 
     controller_master="true", 
     heal_enable="true", 
@@ -116,3 +116,13 @@ Thing mqtt:topic:generic "Generic MQTT Thing" (mqtt:broker:broker) {
             transformationPattern="JSONPATH:$.uplink_message.decoded_payload.batteryCapacity"
         ]
 }
+
+// XBee
+Bridge serial:serialBridge:xbeesensors [ 
+    serialPort="COM5", 
+    baudRate=9600, 
+    dataBits=8, 
+    parity="N", 
+    stopBits=1, 
+    charset="ISO-8859-1" 
+] {}
