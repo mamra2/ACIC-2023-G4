@@ -43,12 +43,21 @@ rule "Reply (on Telegram)"
             else if (message == "No") ("No"))
         telegramBot.sendTelegramAnswer(Telegram_ReplyId.state.toString, notificationConfirmation + " notification was sent.")
 end
+rule "Calendar Event Message (on Telegram)"
+    when 
+        Item Telegram_Message received update "Event started" or
+        Item Telegram_Message received update "Event ended"
+    then
+        val bot = getActions("telegram","telegram:telegramBot:telegrambot")
+        bot.sendTelegram(Test_Switch.name + "'s state was set to " + Test_Switch.state.toString + ", as expected.")
+        bot.sendTelegram("The message defined in the calendar event's description was \n\"" + Telegram_Message.state.toString + "\"")
+end
 
 // Twitter
 rule "Send tweet (on Twitter)"
     when
-        Item Test_Switch received update
-//        Item Telegram_Message received update "Send Tweet"
+//        Item Test_Switch received update
+        Item Telegram_Message received update "Send Tweet"
     then
         val tweetActions = getActions("twitter","twitter:account:account")
         // Send tweet

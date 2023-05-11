@@ -61,8 +61,16 @@ String Last_Tweet "Last Tweet" <text> (Twitter) ["Alarm"] {
     channel="twitter:account:account:lasttweet"
 }
 
-
 // iCalendar
+String Current_Event "Current Event" <calendar> (Activities) ["Alarm"] { 
+    channel="icalendar:calendar:calendar:current_title" 
+}
+DateTime Current_Event_Start "Current Event start [%1$tR %1$ta %1$tF]" <time> (Activities) ["Alarm"] {
+    channel="icalendar:calendar:calendar:current_start"
+}
+DateTime Current_Event_End "Current Event end [%1$tR %1$ta %1$tF]" <time> (Activities) ["Alarm"] {
+    channel="icalendar:calendar:calendar:current_end"
+}
 String Next_Event "Next Event" <calendar> (Activities) ["Alarm"] { 
     channel="icalendar:calendar:calendar:next_title" 
 }

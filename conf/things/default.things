@@ -30,8 +30,8 @@ Thing mail:smtp:smtp [
 
 // iCalendar
 Bridge icalendar:calendar:calendar "Calendar" [ 
-    url="http://fenix.iscte-iul.pt/publico/publicPersonICalendar.do?method=iCalendar&username=mamra2@iscte.pt&password=05dTXEEs6wyMIJjfehDDoCIaT4ocwzRXfdACxzxWcdnmg1P5ffe80MkoNHrEhi2qpiOPJaHSOdEG6SihppHv6L7iHlI5X4D0RbNwTTvIHWwvWKayMmn8nlalaiwgehKO", 
-    refreshTime=1 
+    url="https://calendar.google.com/calendar/ical/97f66fc43744e1669df8853d48ffa122f967981fe48e99e4e695fec15b694a03%40group.calendar.google.com/private-c12a37af67ac93f6a7456967a676c2cc/basic.ics", 
+    refreshTime=5 
 ]
 Thing icalendar:eventfilter:filter "Calendar Filter" (icalendar:calendar:calendar) [ 
     maxEvents=3, refreshTime=1, datetimeUnit="DAY", datetimeStart=1, datetimeEnd=2, datetimeRound=true 
