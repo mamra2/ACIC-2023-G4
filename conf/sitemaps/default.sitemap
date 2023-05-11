@@ -4,12 +4,14 @@ sitemap default label="Main Menu" {
         Switch item=Test_Switch
         Text item=MyDeviceIsOnline
         Switch item=Wallplug_Hall
-        Group item=Z_Stick
         Default item=Last_Tweet
-        Default item=XBeeString
-        Default item=XBeeBinary
-        Default item=XBeeLed
-        Default item=XBeeTemperature
+        Group item=Activities
+        //Group item=Z_Stick
+        //Group item=XBee
+        //Default item=XBeeString
+        //Default item=XBeeBinary
+        //Default item=XBeeLed
+        //Default item=XBeeTemperature
     }
     Frame label="Lights" icon="light" {
         Group item=BedroomBulb

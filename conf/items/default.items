@@ -57,9 +57,10 @@ String Telegram_ReplyId "Telegram Reply Id" <suitcase> (Telegram) ["Alarm"] {
 }
 
 // Twitter
-String Last_Tweet "Latest Tweet [%s]" <text> (Twitter) ["Alarm"] { 
-    channel="twitter:account:account:lasttweet" 
+String Last_Tweet "Last Tweet" <text> (Twitter) ["Alarm"] { 
+    channel="twitter:account:account:lasttweet"
 }
+
 
 // iCalendar
 String Next_Event "Next Event" <calendar> (Activities) ["Alarm"] { 
