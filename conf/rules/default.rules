@@ -1,3 +1,6 @@
+// Initialize bot (on Telegram)
+val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
+
 // Device & Wallpug
 rule "Toggle Wallplug"
     when
@@ -7,36 +10,50 @@ rule "Toggle Wallplug"
 end
 
 // Telegram
+rule "Send Text"
+    when 
+        Item Telegram_Message received update "email"
+    then
+        var message = Telegram_Message.state.toString
+        if(message == "email" || message == "Email"){
+            telegramBot.sendTelegram("To?")
+            telegramBot.sendTelegram("Subject?")
+            telegramBot.sendTelegram("Body?")
+
+            var String[] test = message.split(",")
+            telegramBot.sendTelegram(test)
+        }
+end
 rule "Receive Message (on Telegram)"
     when 
         //Change this trigger message
         Item Telegram_Message received update "message test"
     then
         var message = Telegram_Message.state.toString
-        val bot = getActions("telegram","telegram:telegramBot:telegrambot")
+        //val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
         if (message == "ON" || message == "OFF") {
             Test_Switch.sendCommand(message)
-            bot.sendTelegram("Switch changed state to " + message)
+            telegramBot.sendTelegram("Switch changed state to " + message)
         }
         else {
-            bot.sendTelegram("Switch didn't change state because the message sent was \n\"" + message + "\"")
+            telegramBot.sendTelegram("Switch didn't change state because the message sent was \n\"" + message + "\"")
         }
         // Send to Henrique
-        //bot.sendTelegram(5680556583L, "This is a message for you, Henrique!")
+        //telegramBot.sendTelegram(5680556583L, "This is a message for you, Henrique!")
 end
 rule "Query (on Telegram)"
     when
         //Change this trigger message
         Item Telegram_Message received update "reply test"
     then
-        val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
+        //val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
         telegramBot.sendTelegramQuery("Do you also want to receive a notification through e-mail?", "Telegram_Reply", "Yes", "No")
 end
 rule "Reply (on Telegram)"
     when
         Item Telegram_ReplyId received update "Telegram_Reply"
     then
-        val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot") 
+        //val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot") 
         var message = Telegram_Message.state.toString
         var notificationConfirmation = (
             if (message == "Yes") ("E-mail") 
@@ -48,9 +65,8 @@ rule "Calendar Event Message (on Telegram)"
         Item Telegram_Message received update "Event started" or
         Item Telegram_Message received update "Event ended"
     then
-        val bot = getActions("telegram","telegram:telegramBot:telegrambot")
-        bot.sendTelegram(Test_Switch.name + "'s state was set to " + Test_Switch.state.toString + ", as expected.")
-        bot.sendTelegram("The message defined in the calendar event's description was \n\"" + Telegram_Message.state.toString + "\"")
+        telegramBot.sendTelegram(Test_Switch.name + "'s state was set to " + Test_Switch.state.toString + ", as expected.")
+        telegramBot.sendTelegram("The message defined in the calendar event's description was \n\"" + Telegram_Message.state.toString + "\"")
 end
 
 // Twitter
@@ -70,7 +86,7 @@ end
 // Mail
 rule "Send e-mail"
     when 
-//        Item Test_Switch received update
+//        Item Test_Switch received update+
         Item Telegram_Message received update "Send e-mail"
     then
         val receiver = "mamra2@iscte-iul.pt"
