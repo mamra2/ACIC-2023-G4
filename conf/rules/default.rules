@@ -13,7 +13,9 @@ end
 rule "Receive Message (on Telegram)"
     when 
         //Change this trigger message
-        Item Telegram_Message received update "message test"
+        Item Telegram_Message received update "message test" or
+        Item Telegram_Message received update "ON" or
+        Item Telegram_Message received update "OFF"
     then
         var message = Telegram_Message.state.toString
         //val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
@@ -42,8 +44,8 @@ rule "Reply (on Telegram)"
         //val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot") 
         var message = Telegram_Message.state.toString
         var notificationConfirmation = (
-            if (message == "Yes") ("E-mail") 
-            else if (message == "No") ("No"))
+            if (message == "Send e-mail") ("E-mail") 
+            else if (message == "No thanks") ("No"))
         telegramBot.sendTelegramAnswer(Telegram_ReplyId.state.toString, notificationConfirmation + " notification was sent.")
 end
 rule "Calendar Event Message (on Telegram)"
