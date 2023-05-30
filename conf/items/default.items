@@ -57,7 +57,7 @@ String Telegram_ReplyId "Telegram Reply Id" <suitcase> (Telegram) ["Alarm"] {
 }
 
 // Twitter
-String Last_Tweet "Last Tweet" <text> (Twitter) ["Alarm"] { 
+String Last_Tweet "Last Tweet" <text> (Twitter) ["Measurement", "Timestamp"] { 
     channel="twitter:account:account:lasttweet"
 }
 

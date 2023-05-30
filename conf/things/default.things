@@ -16,7 +16,7 @@ Thing twitter:account:account [
     consumerSecret="GTBfpn9gKJhQRXbKf7fHgkJ7aQJ12fjMZki4zx0FfDyDX8jy0I", 
     accessToken="715177321746014209-rNZQcerR5GiyYzHLYg3uuCUpBQeNVkO", 
     accessTokenSecret="FHwTUTB6buneSN4iAs8PeFdaNrQfnwildADOJQsbV7kAz",
-    refresh=1
+    refresh=10
 ]
 
 // Mail
