@@ -10,20 +10,6 @@ rule "Toggle Wallplug"
 end
 
 // Telegram
-rule "Send Text"
-    when 
-        Item Telegram_Message received update "email"
-    then
-        var message = Telegram_Message.state.toString
-        if(message == "email" || message == "Email"){
-            telegramBot.sendTelegram("To?")
-            telegramBot.sendTelegram("Subject?")
-            telegramBot.sendTelegram("Body?")
-
-            var String[] test = message.split(",")
-            telegramBot.sendTelegram(test)
-        }
-end
 rule "Receive Message (on Telegram)"
     when 
         //Change this trigger message
@@ -47,7 +33,7 @@ rule "Query (on Telegram)"
         Item Telegram_Message received update "reply test"
     then
         //val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
-        telegramBot.sendTelegramQuery("Do you also want to receive a notification through e-mail?", "Telegram_Reply", "Yes", "No")
+        telegramBot.sendTelegramQuery("Do you also want to receive a notification through e-mail?", "Telegram_Reply", "Send e-mail", "No thanks")
 end
 rule "Reply (on Telegram)"
     when
@@ -90,7 +76,7 @@ rule "Send e-mail"
         Item Telegram_Message received update "Send e-mail"
     then
         val receiver = "mamra2@iscte-iul.pt"
-        val mailSubject = "[ACIC] openHAB (Teste de Laboratório)"
+        val mailSubject = "[ACIC] OpenHAB (Teste de Laboratório)"
         val mailContent = "Para efeitos de laboratório, envia-se esta mensagem."
         val mailActions = getActions("mail","mail:smtp:smtp")
         mailActions.sendMail(receiver, mailSubject, mailContent)
@@ -121,79 +107,4 @@ rule "Send IFTTT Notification"
         logInfo("URL", "Sent to \nURL \"{}\"", ifttt_url)
 end
 
-// LoRa
-rule "Publish MQTT Topic"
-    when 
-//        Item Test_Switch received update
-        Item Telegram_Message received update "Publish MQTT topic"
-    then
-        val topic = "v3/ttn-backdior-app@ttn/devices/eui-0025ca0a00014919/up"
-        val value = "The temperature is " + LoRa_AirTemperature.state.toString
-        logInfo("LoRa", "LoRa Air Temperature is {}", LoRa_AirTemperature.state.toString)
-        val retained = true
-        val mqttActions = getActions("mqtt","mqtt:broker:broker")
-        mqttActions.publishMQTT(topic, value, retained)
-end
-
 // XBee
-rule "NewBinarySerialRule"
-    when
-        Item XBeeBinary changed 
-    then
-        //just logging the incoming binary string of the RXpacket (not really necessary for the integration)
-        logInfo("XBee", "Incoming binary: {}", XBeeBinary.state)
-        //Base64 decoding of the RXpacket
-        val byte[] bytes = RawType.valueOf(XBeeBinary.state.toString()).getBytes()
-        val char[] hexChars = newCharArrayOfSize(bytes.length() * 2)
-        //just logging the RXpacket in HEX (not really necessary for the integration, if only using 1 sensor)
-        //If multiple sensors are sending values one may have to use the source address to map the value to the apropriate Item
-        val char[] hexArray = "0123456789ABCDEF".toCharArray()
-        for (var j = 0; j < bytes.length(); j++) { 
-            var int v = bytes.get(j).bitwiseAnd(0xFF)
-            hexChars.set(j * 2, hexArray.get(v >>> 4))
-            hexChars.set(j * 2 + 1, hexArray.get(v.bitwiseAnd(0x0F)))
-        }
-        val outString = new String(hexChars)
-        //logInfo( "XBee", "Incoming binary decoded: {}", outString)
-        //we know the exact position where the data is. 
-        var int receivedtemp = bytes.get(15).bitwiseAnd(0xFF) * 256 + bytes.get(16).bitwiseAnd(0xFF)
-        //updating the Item, with units conversions: 3300 mV of reference voltage and 10 bit resolution (1024 levels)
-        val temp = Math::round( ( receivedtemp * 3300.0 / 1024 - 500).floatValue() * 10 ) / 100.0
-        XBeeTemperature.postUpdate(temp)
-        logInfo("XBee", "Incoming temperature from device ID {}: {}", outString.substring(8,24), XBeeTemperature.state) 
-end
-rule "XBeeLedRule"
-    when
-        Item XBeeLed changed 
-    then
-        if (XBeeLed.state == OFF) { 
-            //header: |start|length |type |ID |8 byte address |net addr |broad|optio
-            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u0092\u00FF\u007A\u00FF\u00FE\u0000\u0000"
-            //determining header parcial checksum
-            var int sum = 0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0x92+ 0xFF+ 0x7A+ 0xFF+ 0xFE+ 0x00+ 0x00 
-            //value: 'D' character to turn off the led
-            msg += "\u0044"
-            //updating parcial checksum with value
-            sum += 0x44
-            //checksum = 0xFF - sum ; then append it to the message, and send it
-            sum = 0xFF - sum.bitwiseAnd(0xFF)
-            msg += String.valueOf(Character.toChars(sum))
-            logInfo( "XBee", "Outgoing message OFF: {}", msg)
-            XBeeString.sendCommand(msg)
-        }
-        if (XBeeLed.state == ON) { 
-            //header: |start|length |type |ID |8 byte address |net addr |broad|optio
-            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u0092\u00FF\u007A\u00FF\u00FE\u0000\u0000"
-            //determining header parcial checksum
-            var int sum = 0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0x92+ 0xFF+ 0x7A+ 0xFF+ 0xFE+ 0x00+ 0x00 
-            //value: 'L' character to turn on the led
-            msg += "\u004C"
-            //updating parcial checksum with value
-            sum += 0x4C
-            //checksum = 0xFF - sum ; then append it to the message, and send it
-            sum = 0xFF - sum.bitwiseAnd(0xFF)
-            msg += String.valueOf(Character.toChars(sum))
-            logInfo( "XBee", "Outgoing message ON: {}", msg)
-            XBeeString.sendCommand(msg)
-        }
-end

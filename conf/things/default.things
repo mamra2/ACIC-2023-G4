@@ -1,6 +1,6 @@
 // Device
 Thing network:pingdevice:mydevice "MobileDevice" [ 
-    hostname="192.168.1.66", 
+    hostname="192_168_1_66", 
     refreshInterval=2000
 ]
 
@@ -118,11 +118,3 @@ Thing mqtt:topic:generic "Generic MQTT Thing" (mqtt:broker:broker) {
 }
 
 // XBee
-Bridge serial:serialBridge:xbeesensors [ 
-    serialPort="COM5", 
-    baudRate=9600, 
-    dataBits=8, 
-    parity="N", 
-    stopBits=1, 
-    charset="ISO-8859-1" 
-] {}
