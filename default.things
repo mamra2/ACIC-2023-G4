@@ -1,0 +1,132 @@
+// Device
+Thing network:pingdevice:mydevice "MobileDevice" [ 
+    hostname="192.168.1.66", 
+    refreshInterval=2000
+]
+
+// Telegram
+Thing telegram:telegramBot:telegrambot [ 
+    chatIds="1692342549", 
+    botToken="6015714713:AAHb3KgNHc1XvKgi6ZXAdELo46cg9slDcIw" 
+]
+
+// Twitter
+Thing twitter:account:account [ 
+    consumerKey="VELVTtKYGKyZhfsVJJAbOAkfw", 
+    consumerSecret="xVa2DCVa6dadZXsadB4LOXlOqYCHyvaQxC03YJmptbmqL4nKG7", 
+    accessToken="715177321746014209-3gw7KFBcTWhhXLI2e4pnRDQKeIzHJA2", 
+    accessTokenSecret="d6DkXUK4nNRA5SPnjcmlmUWAWoqHObNr9HUWOK9xmAcIu", 
+    refresh=5
+]
+
+// Mail
+Thing mail:smtp:smtp [ 
+    hostname="smtp.gmail.com", 
+    sender="miguelromana93@gmail.com",
+    security="STARTTLS", 
+    username="miguelromana93@gmail.com", 
+    password="vhjy fdes hyxa mmev" 
+]
+
+// iCalendar
+Bridge icalendar:calendar:calendar "Calendar" [ 
+    url="http://fenix.iscte-iul.pt/publico/publicPersonICalendar.do?method=iCalendar&username=mamra2@iscte.pt&password=05dTXEEs6wyMIJjfehDDoCIaT4ocwzRXfdACxzxWcdnmg1P5ffe80MkoNHrEhi2qpiOPJaHSOdEG6SihppHv6L7iHlI5X4D0RbNwTTvIHWwvWKayMmn8nlalaiwgehKO", 
+    refreshTime=1 
+]
+Thing icalendar:eventfilter:filter "Calendar Filter" (icalendar:calendar:calendar) [ 
+    maxEvents=3, refreshTime=1, datetimeUnit="DAY", datetimeStart=1, datetimeEnd=2, datetimeRound=true 
+]
+
+// Astro
+Thing astro:sun:home [ 
+    geolocation="38.74909954079374,-9.153553816217409", 
+    interval=60 
+]
+Thing astro:moon:home [ 
+    geolocation="38.74909954079374,-9.153553816217409", 
+    interval=60 
+]
+
+// OpenWeather
+Bridge openweathermap:weather-api:api "OpenWeatherMap" [ 
+    apikey="61e15bbe4b61b17ef5a98b672f8f4efa", 
+    refreshInterval=60, 
+    language="en" 
+] { 
+    Thing weather-and-forecast local "Local Weather And Forecast" [ 
+        location="38.74909954079374,-9.153553816217409", 
+        forecastHours=24, 
+        forecastDays=7 
+    ]
+}
+
+// Lights
+Bridge hue:bridge:mybridge [ 
+    ipAddress="192.168.8.193", 
+    userName="qi52KySKTZ9dBb3lYkSCi17povASXFGsxqT3-qmH",
+    protocol="http" //is it really needed (with router?)?
+] { 
+    group bed-bulbs "Bedroom Bulbs" [groupId="2"]
+    0210 bulb1 "Bulb 1" [lightId="5"]
+    0220 bulb2 "Bulb 2" [lightId="4"]
+}
+
+// ConBee
+Bridge deconz:deconz:homeserver [ 
+    host="172.26.160.1", 
+    apikey="F58F8E5B05"
+] { 
+    dimmablelight tradfor "Tradfor" [id="2"]
+    dimmablelight phue-amb "PHue Ambiance" [id="4"]    
+}
+
+// Z-Stick
+Bridge zwave:serial_zstick:controller "ZWave Controller" [ 
+    port="COM3", 
+    controller_softreset="false", 
+    controller_master="true", 
+    heal_enable="true", 
+    security_networkkey="Olhaafoto" 
+] {
+    
+	fibaro_fgms001_03_002 motion_sensor "Motion Sensor" [node_id=2]
+	aeon_zw130_00_000 wallmote "WallMote Quad" [node_id=3]
+    aeon_dsd31_00_000 siren "Outlet Siren" [node_id=4]
+    fibaro_fgdw002_00_000 door_sensor "Door/Window Sensor 2" [node_id=5]
+    aeon_zw111_02_003 nano_dimmer "Nano Dimmer" [node_id=6]
+    
+}
+
+// LoRa
+Bridge mqtt:broker:broker "MQTT Broker" [
+    host="eu1.cloud.thethings.network",
+    secure="true",
+    enableDiscovery="false",
+    username="ttn-backdior-app@ttn",
+    password="NNSXS.L6WTTIK2XRNFGBEFATSJBKVDRPEBIZI4X3C422Y.2Z4JDROCO4FBC6M3QIL6YWIBWAVG2GYZ6YW3F6TSBIFBTFRAZXVQ"
+]
+Thing mqtt:topic:generic "Generic MQTT Thing" (mqtt:broker:broker) {
+    Channels:
+        Type number:temperature "Air Temperature" [ 
+            stateTopic="v3/ttn-backdior-app@ttn/devices/eui-0025ca0a00014919/up",
+            transformationPattern="JSONPATH:$.uplink_message.decoded_payload.temperature"
+        ]
+        Type number:humidity "Air Humidity" [ 
+            stateTopic="v3/ttn-backdior-app@ttn/devices/eui-0025ca0a00014919/up",
+            transformationPattern="JSONPATH:$.uplink_message.decoded_payload.humidity"
+        ]
+        Type string:battery "Battery Level" [ 
+            stateTopic="v3/ttn-backdior-app@ttn/devices/eui-0025ca0a00014919/up",
+            transformationPattern="JSONPATH:$.uplink_message.decoded_payload.batteryCapacity"
+        ]
+}
+
+// XBee
+Bridge serial:serialBridge:xbeesensors [ 
+    serialPort="COM5", 
+    baudRate=9600, 
+    dataBits=8, 
+    parity="N", 
+    stopBits=1, 
+    charset="ISO-8859-1" 
+] {}

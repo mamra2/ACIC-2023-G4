@@ -1,0 +1,181 @@
+// Groups
+
+//Indoor
+Group Indoor "Indoor" <presence> ["Indoor"]
+Group Home "Home" <house> (Indoor) ["House"]
+//GroundFloor
+Group GroundFloor "GroundFloor" <groundfloor> (Home) ["GroundFloor"]
+Group LivingRoom "LivingRoom" <sofa> (GroundFloor) ["LivingRoom"]
+Group Kitchen "Kitchen" <kitchen> (GroundFloor) ["Kitchen"]
+//FirstFloor
+Group FirstFloor "FirstFloor" <firstfloor> (Home) ["FirstFloor"]
+Group Bedroom "Bedroom" <bedroom> (FirstFloor) ["Bedroom"]
+Group Bathroom "Bathroom" <bath> (FirstFloor) ["Bathroom"]
+Group BedroomBulb "BedroomBulb" <lightbulb> (Bedroom) ["Lightbulb"]
+
+//Outdoor
+Group Outdoor "Outdoor" <terrace> ["Outdoor"]
+Group Garden "Garden" <garden> (Outdoor) ["Garden"]
+//Equipment groups
+Group AlarmSystem "Alarm System" <alarm> (Garden) ["AlarmSystem"]
+Group WebService "Web Service" <qualityofservice> (AlarmSystem) ["WebService"]
+Group WeatherService "Weather Service" <sun_clouds> (WebService) ["WeatherService"]
+//Equipment
+Group Device "Device" <screen> (AlarmSystem) ["Smartphone"]
+Group LoRa "LoRaWAN" <sensor> (AlarmSystem) ["Sensor"]
+Group XBee "XBee" <sensor> (AlarmSystem) ["Sensor"]
+Group Z_Stick "Z-Stick" <sensor> (AlarmSystem) ["Sensor"]
+Group Application "Application" <screen> (WebService) ["WebService"]
+Group Activities "Activities" <party> (Application) ["WebService"]
+Group Telegram "Telegram" <flow> (Application) ["WebService"]
+Group Twitter "Twitter" <mediacontrol> (Application) ["WebService"]
+Group Astro "Astro" <sun> (WeatherService) ["WeatherService"]
+Group OpenWeather "Open Weather" <sun_clouds> (WeatherService) ["WeatherService"]
+
+
+// For Testing Purposes
+Switch Test_Switch "Test Switch" <switch> (Bathroom) ["WallSwitch"]
+
+// Device
+Switch Wallplug_Hall "Wallplug" <poweroutlet_us> (Home) ["WallSwitch"]
+Switch MyDeviceIsOnline "My Device" <network> (Device) ["Switch"] {
+    channel="network:pingdevice:mydevice:online"
+}
+Number MyDeviceResponseTime "Latency [%s ms]" <projector> (Device) ["Measurement", "Presence"] {
+    channel="network:pingdevice:mydevice:latency"
+}
+DateTime MyDeviceLastSeen "Last Seen [%1$tT %1$td/%1$tm/%1$ty]" <camera> (Device) ["Measurement", "Presence", "Timestamp"] {
+    channel="network:pingdevice:mydevice:lastseen"
+}
+
+// Telegram
+String Telegram_Message "Telegram Message" <text> (Telegram) ["Alarm"] { 
+    channel = "telegram:telegramBot:telegrambot:lastMessageText" 
+}
+String Telegram_ReplyId "Telegram Reply Id" <suitcase> (Telegram) ["Alarm"] { 
+    channel = "telegram:telegramBot:telegrambot:replyId" 
+}
+
+// Twitter
+String Last_Tweet "Latest Tweet [%s]" <text> (Twitter) ["Alarm"] { 
+    channel="twitter:account:account:lasttweet" 
+}
+
+// iCalendar
+String Next_Event "Next Event" <calendar> (Activities) ["Alarm"] { 
+    channel="icalendar:calendar:calendar:next_title" 
+}
+DateTime Next_Event_Start "Next Event start [%1$tR %1$ta %1$tF]" <time> (Activities) ["Alarm"] {
+    channel="icalendar:calendar:calendar:next_start"
+}
+String FirstEvent_Tomorrow "First Event tomorrow" <calendar> (Activities) ["Alarm"] { 
+    channel="icalendar:eventfilter:filter:result_0#title" 
+}
+DateTime FirstEvent_Tomorrow_Start "First Event tomorrow start [%1$tR %1$ta %1$tF]" <time> (Activities) ["Alarm"] { 
+    channel="icalendar:eventfilter:filter:result_0#begin" 
+}
+
+// Astro
+DateTime Sunset_Time "Sunset Time [%1$tR %1$ta %1$tF]" <sunset> (Astro) ["Measurement", "Timestamp"] { 
+    channel="astro:sun:home:set#start" 
+}
+String Moon_Phase "Moon Phase" <moon> (Astro) ["Measurement", "Presence"] { 
+    channel="astro:moon:home:phase#name" 
+}
+Number Moon_Distance "Moon Distance [%.3f km]" <zoom> (Astro) ["Measurement", "Presence"] { 
+    channel="astro:moon:home:distance#distance" 
+}
+
+// OpenWeather
+Number:Speed LocalCurrent_WindSpeed "Wind speed [%.1f %unit%]" <wind> (OpenWeather) ["Measurement", "Wind"] { 
+    channel="openweathermap:weather-and-forecast:api:local:current#wind-speed" 
+}
+Number:Length LocalCurrent_RainVolume "Rain volume [%.2f %unit%]" <rain> (OpenWeather) ["Measurement", "Rain"] { 
+    channel="openweathermap:weather-and-forecast:api:local:current#rain" 
+}
+Number:Temperature LocalCurrent_Temperature "Temperature [%.1f %unit%]" <temperature> (OpenWeather) ["Measurement", "Temperature"] { 
+    channel="openweathermap:weather-and-forecast:api:local:current#temperature" 
+}
+String LocalCurrent_Condition "Condition for today" <sun_clouds> (OpenWeather) ["Measurement", "Presence"] { 
+    channel="openweathermap:weather-and-forecast:api:local:current#condition" 
+}
+Image LocalCurrent_ConditionIcon "Condition for today (Icon)" <sun_clouds> (OpenWeather) ["Measurement", "Presence"] { 
+    channel="openweathermap:weather-and-forecast:api:local:current#icon" 
+}
+
+// Lights
+Switch Light_Switch "Light Switch" <wallswitch> (BedroomBulb) ["Switch"] { 
+    channel="hue:group:mybridge:bed-bulbs:switch"
+//    channel="hue:0210:mybridge:bulb1:color",
+//    channel="hue:0220:mybridge:bulb2:brightness"
+}
+String Light_Scene "Light Scene" <rgb> (BedroomBulb) ["Control", "Light"] { 
+    channel="hue:bridge:mybridge:scene"
+}
+Color Light_Color "Light Color" <colorwheel> (BedroomBulb) ["Light"] { 
+    channel="hue:0210:mybridge:bulb1:color"
+}
+Dimmer Light_Color_Temperature "Light Color Temperature [%s %%]" <temperature> (BedroomBulb) ["ColorTemperature"] { 
+    channel="hue:0210:mybridge:bulb1:color_temperature",
+    channel="hue:0220:mybridge:bulb2:color_temperature"
+}
+
+// ConBee
+Dimmer Con_Light_Dimmer "Con Light Dimmer" <wallswitch> (BedroomBulb) ["ColorTemperature"] { 
+    channel="deconz:dimmablelight:homeserver:tradfor:brightness",
+    channel="deconz:dimmablelight:homeserver:phue-amb:brightness"
+}
+
+// Z-Stick
+Contact Door_Sensor "Door Sensor [%s]" <frontdoor> (Z_Stick, GroundFloor) ["Measurement", "Presence"] { 
+   channel="zwave:fibaro_fgdw002_00_000:controller:door_sensor:sensor_door" 
+}
+Number Door_Sensor_Battery "Door Sensor Battery [%.2f %%]" <batterylevel> (Z_Stick, FirstFloor) ["Measurement", "Energy"] { 
+    channel="zwave:fibaro_fgdw002_00_000:controller:door_sensor:battery-level"
+}
+Switch Motion_Alarm "Motion Alarm" <motion> (Z_Stick, FirstFloor) ["MotionDetector"] { 
+    channel="zwave:fibaro_fgms001_03_002:controller:motion_sensor:alarm_motion"
+}
+Number Motion_Alarm_Battery "Motion Alarm Battery [%.2f %%]" <batterylevel> (Z_Stick, FirstFloor) ["Measurement", "Energy"] { 
+    channel="zwave:fibaro_fgms001_03_002:controller:motion_sensor:battery-level"
+}
+Number Motion_Alarm_Temperature "Motion Alarm Temperature [%.2f %unit%]" <temperature> (Z_Stick, FirstFloor) ["Measurement", "Temperature"] { 
+    channel="zwave:fibaro_fgms001_03_002:controller:motion_sensor:sensor_temperature"
+}
+Number WallMote_Button "WallMote Quad [%s]" <wallswitch> (Z_Stick, LivingRoom) ["Prensence"] { 
+    channel="zwave:aeon_zw130_00_000:controller:wallmote:scene_number" 
+}
+Switch WallMote_Button_1 "WallMote Button 1" <wallswitch> (Z_Stick, LivingRoom) ["Prensence"] { 
+    channel="zwave:aeon_zw130_00_000:controller:wallmote:basic_switch_binary1" 
+}
+Switch Siren "Siren" <alarm> (Z_Stick, LivingRoom) ["Presence"] { 
+    channel="zwave:aeon_dsd31_00_000:controller:siren:switch_binary" 
+}
+Dimmer Dime "Dimmer" <temperature> (Z_Stick, LivingRoom) ["ColorTemperature"] { 
+    channel="zwave:aeon_zw111_02_003:controller:nano_dimmer:switch_dimmer" 
+}
+Number Dime_Voltage "Voltage [%s]" <Energy> (Z_Stick, LivingRoom) ["Energy"] { 
+    channel="zwave:aeon_zw111_02_003:controller:nano_dimmer:meter_voltage" 
+}
+// LoRa
+Number:Temperature LoRa_AirTemperature "Air Temperature [%.2f %unit%]" <temperature> (LoRa) ["Measurement", "Temperature"] { 
+    channel="mqtt:topic:generic:temperature" 
+}
+Number LoRa_AirHumidity "Air Humidity [%.2f %%]" <humidity> (LoRa) ["Measurement", "Humidity"] { 
+    channel="mqtt:topic:generic:humidity" 
+}
+String LoRa_BatteryLevel "Battery Level" <batterylevel> (LoRa) ["Measurement", "Energy"] { 
+    channel="mqtt:topic:generic:battery" 
+}
+
+// XBee
+// Items to be used for serial communication (don't display data), linked to channels of the serialBridge binding Thing
+String XBeeString "XBee String" <light> (XBee) { 
+    channel="serial:serialBridge:xbeesensors:string"
+}
+String XBeeBinary "XBee Binary" <light> (XBee) { 
+    channel="serial:serialBridge:xbeesensors:binary"
+}
+// Items to be used/seen by end users
+Switch XBeeLed "XBee Led" <switch> (XBee) ["Switch", "Light"]
+Number:Temperature XBeeTemperature "XBee Temperature [%s %unit%]" <temperature> (XBee) ["Measurement", "Temperature"]

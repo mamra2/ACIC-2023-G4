@@ -1,0 +1,37 @@
+sitemap default label="Main Menu" {
+    // For Testing Purposes
+    Frame label="Testing Laboratory" {
+        Switch item=Test_Switch
+        Text item=MyDeviceIsOnline
+        Switch item=Wallplug_Hall
+        Group item=Z_Stick
+        Default item=Last_Tweet
+        Default item=XBeeString
+        Default item=XBeeBinary
+        Default item=XBeeLed
+        Default item=XBeeTemperature
+        Default item=WallMote_Button1
+        Default item=Door_Sensor
+        Default item=WallMote_Button_1
+        Default item=Dime
+        Default item=Dime_Voltage
+    }
+    Frame label="Lights" icon="light" {
+        Group item=BedroomBulb
+        Switch item=Light_Switch
+        Selection item=Light_Scene 
+            mappings=[
+                "xilq3BY6P5fK-QZ"="Galaxy", 
+                "Hyc749a5uce5AvC"="Starlight", 
+                "dlsWwGftKq61u6q"="Tokyo"
+            ]
+        Slider item=Light_Color_Temperature sendFrequency=2000
+        Slider item=Con_Light_Dimmer
+    }
+    Frame label="Services" icon="mediacontrol" {
+        Group item=AlarmSystem
+    }
+    Frame label="Device" icon="projector" {
+        Group item=Home
+    }
+}
