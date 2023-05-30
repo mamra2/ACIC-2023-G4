@@ -168,9 +168,9 @@ rule "XBeeLedRule"
     then
         if (XBeeLed.state == OFF) { 
             //header: |start|length |type |ID |8 byte address |net addr |broad|optio
-            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u0099\u002D\u0022\u00FF\u00FE\u0000\u0000"
+            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u0092\u00FF\u007A\u00FF\u00FE\u0000\u0000"
             //determining header parcial checksum
-            var int sum = 0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0x99+ 0x2D+ 0x22+ 0xFF+ 0xFE+ 0x00+ 0x00 
+            var int sum = 0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0x92+ 0xFF+ 0x7A+ 0xFF+ 0xFE+ 0x00+ 0x00 
             //value: 'D' character to turn off the led
             msg += "\u0044"
             //updating parcial checksum with value
@@ -183,9 +183,9 @@ rule "XBeeLedRule"
         }
         if (XBeeLed.state == ON) { 
             //header: |start|length |type |ID |8 byte address |net addr |broad|optio
-            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u0099\u002D\u0022\u00FF\u00FE\u0000\u0000"
+            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u0092\u00FF\u007A\u00FF\u00FE\u0000\u0000"
             //determining header parcial checksum
-            var int sum = 0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0x99+ 0x2D+ 0x22+ 0xFF+ 0xFE+ 0x00+ 0x00 
+            var int sum = 0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0x92+ 0xFF+ 0x7A+ 0xFF+ 0xFE+ 0x00+ 0x00 
             //value: 'L' character to turn on the led
             msg += "\u004C"
             //updating parcial checksum with value
