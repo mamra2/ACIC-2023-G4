@@ -1,6 +1,6 @@
 // Device
 Thing network:pingdevice:mydevice "MobileDevice" [ 
-    hostname="192_168_1_66", 
+    hostname="192.168.1.66", 
     refreshInterval=2000
 ]
 

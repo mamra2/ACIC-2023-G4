@@ -4,7 +4,6 @@ sitemap default label="Main Menu" {
         Switch item=Test_Switch
         Text item=MyDeviceIsOnline
         Switch item=Wallplug_Hall
-        Default item=Last_Tweet
         Default item=Telegram_Message
     }
     Frame label="Lights" icon="light" {

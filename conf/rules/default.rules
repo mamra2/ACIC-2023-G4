@@ -2,6 +2,7 @@
 val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
 
 // Device & Wallpug
+// TODO: Delete this rule?
 rule "Toggle Wallplug"
     when
         Item MyDeviceIsOnline changed
@@ -19,6 +20,8 @@ rule "Receive Message (on Telegram)"
     then
         var message = Telegram_Message.state.toString
         //val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
+        // Send message to colleague
+        telegramBot.sendTelegram(5680556583L, "This is a message for you, Henrique!")
         if (message == "ON" || message == "OFF") {
             Test_Switch.sendCommand(message)
             telegramBot.sendTelegram("Switch changed state to " + message)
@@ -26,8 +29,6 @@ rule "Receive Message (on Telegram)"
         else {
             telegramBot.sendTelegram("Switch didn't change state because the message sent was \n\"" + message + "\"")
         }
-        // Send to Henrique
-        //telegramBot.sendTelegram(5680556583L, "This is a message for you, Henrique!")
 end
 rule "Query (on Telegram)"
     when
@@ -35,7 +36,7 @@ rule "Query (on Telegram)"
         Item Telegram_Message received update "reply test"
     then
         //val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
-        telegramBot.sendTelegramQuery("Do you also want to receive a notification through e-mail?", "Telegram_Reply", "Send e-mail", "No thanks")
+        telegramBot.sendTelegramQuery("Do you also want to receive a notification through e-mail?", "Telegram_Reply", "Send e-mail", "Send IFTTT", "No, thanks")
 end
 rule "Reply (on Telegram)"
     when
@@ -45,7 +46,8 @@ rule "Reply (on Telegram)"
         var message = Telegram_Message.state.toString
         var notificationConfirmation = (
             if (message == "Send e-mail") ("E-mail") 
-            else if (message == "No thanks") ("No"))
+            else if (message == "Send IFTTT") ("IFTTT")
+            else if (message == "No, thanks") ("No"))
         telegramBot.sendTelegramAnswer(Telegram_ReplyId.state.toString, notificationConfirmation + " notification was sent.")
 end
 rule "Calendar Event Message (on Telegram)"
@@ -74,12 +76,16 @@ end
 // Mail
 rule "Send e-mail"
     when 
-//        Item Test_Switch received update+
+//        Item Test_Switch received update
         Item Telegram_Message received update "Send e-mail"
     then
+        var item = Test_Switch
+        var itemName = item.name
+        var itemState = item.state
         val receiver = "mamra2@iscte-iul.pt"
-        val mailSubject = "[ACIC] OpenHAB (Teste de Laboratório)"
-        val mailContent = "Para efeitos de laboratório, envia-se esta mensagem."
+        var mailSubject = "ACIC | OpenHAB (Laboratório)"
+        var mailContent = "Para efeitos de laboratório, envia-se esta mensagem."
+        mailContent += "\nItem " + itemName + " has state " + itemState + "."
         val mailActions = getActions("mail","mail:smtp:smtp")
         mailActions.sendMail(receiver, mailSubject, mailContent)
 end
@@ -88,7 +94,7 @@ end
 rule "Send IFTTT Notification"
     when
 //        Item Test_Switch received update
-        Item Telegram_Message received update "Send IFTTT Notification"
+        Item Telegram_Message received update "Send IFTTT"
     then
         logInfo("LineBlock","\n" 
             + "//======================================================================================================================================================//")
@@ -98,15 +104,15 @@ rule "Send IFTTT Notification"
         var itemState = item.state
 
         // IFTTT parameters
-        var String ifttt_event = 'OH_Alarm'
-        var String ifttt_key = 'opv4AxqQo6hB48Td9nep-E_Y4SKpDPUHNLAkO2izXCx'
-        var String ifttt_values = '?value1=' + itemName + '&value2=' + itemState
-        var String ifttt_url = 'https://maker.ifttt.com/trigger/' + ifttt_event + '/with/key/' + ifttt_key + ifttt_values
+        var iftttEvent = 'OH_Alarm'
+        var iftttKey = 'opv4AxqQo6hB48Td9nep-E_Y4SKpDPUHNLAkO2izXCx'
+        var iftttValues = '?value1=' + itemName + '&value2=' + itemState
+        var iftttURL = 'https://maker.ifttt.com/trigger/' + iftttEvent + '/with/key/' + iftttKey + iftttValues
 
         // POST HTTP Request
-        sendHttpPostRequest(ifttt_url)
+        sendHttpPostRequest(iftttURL)
         logInfo("IFTT", "IFTTT Notification => " + "Item {} has state {}.", itemName, itemState)
-        logInfo("URL", "Sent to \nURL \"{}\"", ifttt_url)
+        logInfo("URL", "Sent to \nURL \"{}\"", iftttURL)
 end
 
 // XBee
