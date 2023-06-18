@@ -4,6 +4,13 @@ Thing network:pingdevice:mydevice "MobileDevice" [
     refreshInterval=2000
 ]
 
+// TP-Link
+Thing tplinksmarthome:hs100:outlet "Outdoor Outlet" [
+    ipAddress="192.168.8.176",
+    deviceId="8006A0CD3C5CD3367DBBDD99149BF0771B1B015D",
+    refresh=5
+]
+
 // Telegram
 Thing telegram:telegramBot:telegrambot [ 
     chatIds="1692342549", 

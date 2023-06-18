@@ -155,6 +155,4 @@ rule "Control Lights (with dimmer switch)"
         logInfo("HueDimmerSwitch", "Hue dimmer switch triggered by event {}", event)
 end
 
-
-
 // XBee

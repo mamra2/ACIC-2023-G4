@@ -22,6 +22,7 @@ Group WebService "Web Service" <qualityofservice> (AlarmSystem) ["WebService"]
 Group WeatherService "Weather Service" <sun_clouds> (WebService) ["WeatherService"]
 //Equipment
 Group Device "Device" <screen> (AlarmSystem) ["Smartphone"]
+Group TP_Link "Outlet" <poweroutlet> (AlarmSystem) ["PowerOutlet"]
 Group LoRa "LoRaWAN" <sensor> (AlarmSystem) ["Sensor"]
 Group XBee "XBee" <sensor> (AlarmSystem) ["Sensor"]
 Group Z_Stick "Z-Stick" <sensor> (AlarmSystem) ["Sensor"]
@@ -46,6 +47,14 @@ Number MyDeviceResponseTime "Latency [%s ms]" <projector> (Device) ["Measurement
 }
 DateTime MyDeviceLastSeen "Last Seen [%1$tT %1$td/%1$tm/%1$ty]" <camera> (Device) ["Measurement", "Presence", "Timestamp"] {
     channel="network:pingdevice:mydevice:lastseen"
+}
+
+// TP-Link
+Switch HS100Switch "Outlet Power" <poweroutlet> (TP_Link) ["Switch", "Power"] {
+    channel="tplinksmarthome:hs100:outlet:switch"
+}
+Number:Power HS100Rssi "Wi-Fi Signal [%d %unit%]" <network> (TP_Link) ["Switch", "Power"] {
+    channel="tplinksmarthome:hs100:outlet:rssi"
 }
 
 // Telegram
