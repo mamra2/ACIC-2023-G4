@@ -170,13 +170,21 @@ String LoRa_BatteryLevel "Battery Level" <batterylevel> (LoRa) ["Measurement", "
 }
 
 // XBee
-// Items to be used for serial communication (don't display data), linked to channels of the serialBridge binding Thing
+// For serial communication
 String XBeeString "XBee String" <light> (XBee) { 
     channel="serial:serialBridge:xbeesensors:string"
 }
 String XBeeBinary "XBee Binary" <light> (XBee) { 
     channel="serial:serialBridge:xbeesensors:binary"
 }
-// Items to be used/seen by end users
-Switch XBeeLed "XBee Led" <switch> (XBee) ["Switch", "Light"]
-Number:Temperature XBeeTemperature "XBee Temperature [%s %unit%]" <temperature> (XBee) ["Measurement", "Temperature"]
+// For analysis
+Switch XBeeMode_Automatic "Automatic Mode" <switch> (XBee)
+Switch XBeeMode_Manual "Manual Mode" <switch> (XBee)
+Switch XBeeMove_Forward "Go Forward (Clock Wise)" <movecontrol> (XBee)
+Switch XBeeMove_Reverse "Reverse (Counter Clock Wise)" <movecontrol> (XBee)
+Switch XBeeMove_Left "Move Left" <movecontrol> (XBee)
+Switch XBeeMove_Right "Move Right" <movecontrol> (XBee)
+Number XBeeSpeed_Roomba "Roomba Speed (0-9)" <motion> (XBee)
+Number XBeeSpeed_Current "Current Speed [%d]" <motion> (XBee)
+String XBeeSensor_Horizontal "Horizontal Sensor [%d cm]" <projector> (XBee)
+String XBeeSensor_Vertical "Vertical Sensor [%d cm]" <projector> (XBee)

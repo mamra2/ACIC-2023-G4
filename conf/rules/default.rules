@@ -30,6 +30,7 @@ rule "Receive Message (on Telegram)"
             telegramBot.sendTelegram("Switch didn't change state because the message sent was \n\"" + message + "\"")
         }
 end
+
 rule "Query (on Telegram)"
     when
         //Change this trigger message
@@ -38,6 +39,7 @@ rule "Query (on Telegram)"
         //val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
         telegramBot.sendTelegramQuery("Do you also want to receive a notification through other services?", "Telegram_Reply", "Send e-mail", "Send IFTTT", "No, thanks")
 end
+
 rule "Reply (on Telegram)"
     when
         Item Telegram_ReplyId received update "Telegram_Reply"
@@ -50,6 +52,7 @@ rule "Reply (on Telegram)"
             else if (message == "No, thanks") ("No"))
         telegramBot.sendTelegramAnswer(Telegram_ReplyId.state.toString, notificationConfirmation + " notification was sent.")
 end
+
 rule "Calendar Event Message (on Telegram)"
     when 
         Item Telegram_Message received update "Event started" or
@@ -129,18 +132,20 @@ rule "Change Lights' Scenes"
 	    switch(scene) {
             case "1", case scene1: {
                 Light_Scene.sendCommand(scene1)
-                logInfo("HueScene", "Philips Hue lights changed scene to Galaxy")
+                scene = "Galaxy"
             }
             case "2", case scene2: {
                 Light_Scene.sendCommand(scene2)
-                logInfo("HueScene", "Philips Hue lights changed scene to Starlight")
+                scene = "Starlight"
             }
             case "3", case scene3: {
                 Light_Scene.sendCommand(scene3)
-                logInfo("HueScene", "Philips Hue lights changed scene to Tokyo")
+                scene = "Tokyo"
             }
         }
+        logInfo("HueScene", "Philips Hue lights changed scene to \"{}\"", scene)
 end
+
 rule "Control Lights (with dimmer switch)"
     when
         Channel "hue:0820:mybridge:dimmer1:dimmer_switch_event" triggered
@@ -156,3 +161,220 @@ rule "Control Lights (with dimmer switch)"
 end
 
 // XBee
+rule "XBee Automatic Mode"
+    when
+        Item XBeeMode_Automatic changed
+    then
+        if (XBeeMode_Automatic.state == ON) {
+            //header: |start|length      |type |ID   |8 byte address                                 |net addr   |broad|optio
+            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u00E9\u00A3\u0094\u00FF\u00FE\u0000\u0000"
+            //determining header parcial checksum
+            var int sum =                  0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0xE9+ 0xA3+ 0x94+ 0xFF+ 0xFE+ 0x00+ 0x00
+            //value: "a" character to turn on the automatic mode 40E9A394
+            msg += "\u0061"
+            sum += 0x61
+            sum = 0xFF - sum.bitwiseAnd(0xFF)
+            msg += String.valueOf(Character.toChars(sum))
+            logInfo( "XBee", "Outgoing message ON: {}", msg)
+            XBeeString.sendCommand(msg)
+        } else {
+            //header: |start|length      |type |ID   |8 byte address                                 |net addr   |broad|optio
+            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u00E9\u00A3\u0094\u00FF\u00FE\u0000\u0000"
+            //determining header parcial checksum
+            var int sum =                  0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0xE9+ 0xA3+ 0x94+ 0xFF+ 0xFE+ 0x00+ 0x00
+            //value: "e" character to turn off the automatic mode       
+            msg += "\u0065" //Mudar 61 (a)       
+            sum += 0x65
+            sum = 0xFF - sum.bitwiseAnd(0xFF)
+            msg += String.valueOf(Character.toChars(sum))
+            logInfo("XBee", "Outgoing message OFF: {}", msg)
+            XBeeString.sendCommand(msg)
+        }
+end
+
+rule "XBee Manual Mode"
+    when
+        Item XBeeMode_Manual changed
+    then
+        if (XBeeMode_Manual.state == ON) {
+            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u00E9\u00A3\u0094\u00FF\u00FE\u0000\u0000"
+            var int sum =                  0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0xE9+ 0xA3+ 0x94+ 0xFF+ 0xFE+ 0x00+ 0x00
+            //value: "m" character to turn on the manual mode
+            msg += "\u006D"
+            sum += 0x6D
+            sum = 0xFF - sum.bitwiseAnd(0xFF)
+            msg += String.valueOf(Character.toChars(sum))
+            logInfo( "XBee", "Outgoing message ON: {}", msg)
+            XBeeString.sendCommand(msg)
+        } else {
+            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u00E9\u00A3\u0094\u00FF\u00FE\u0000\u0000"
+            var int sum =                  0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0xE9+ 0xA3+ 0x94+ 0xFF+ 0xFE+ 0x00+ 0x00  
+            //value: "e" character to turn off the manual mode
+            msg += "\u0065"
+            sum += 0x65
+            sum = 0xFF - sum.bitwiseAnd(0xFF)
+            msg += String.valueOf(Character.toChars(sum))
+            logInfo("XBee", "Outgoing message OFF: {}", msg)
+            XBeeString.sendCommand(msg)
+            XBeeMove_Forward.sendCommand(OFF)
+            XBeeMove_Reverse.sendCommand(OFF)
+            XBeeMove_Left.sendCommand(OFF)
+            XBeeMove_Right.sendCommand(OFF)
+        }
+end
+
+rule "Forward Rule"
+    when
+        Item XBeeMove_Forward changed
+    then
+        if (XBeeMove_Forward.state == ON) {
+            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u00E9\u00A3\u0094\u00FF\u00FE\u0000\u0000"
+            var int sum =                  0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0xE9+ 0xA3+ 0x94+ 0xFF+ 0xFE+ 0x00+ 0x00
+            //value: "+" character to turn on the manual mode
+            msg += "\u002B"
+            sum += 0x2B
+            sum = 0xFF - sum.bitwiseAnd(0xFF)
+            msg += String.valueOf(Character.toChars(sum))
+            logInfo("XBee", "Outgoing message ON: {}", msg)
+            XBeeString.sendCommand(msg)
+            XBeeMove_Reverse.sendCommand(OFF)
+        }
+end
+
+rule "Reverse Rule"
+    when
+        Item XBeeMove_Reverse changed
+    then
+        if (XBeeMove_Reverse.state == ON) {
+            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u00E9\u00A3\u0094\u00FF\u00FE\u0000\u0000"
+            var int sum =                  0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0xE9+ 0xA3+ 0x94+ 0xFF+ 0xFE+ 0x00+ 0x00
+            //value: "-" character to turn on the manual mode
+            msg += "\u002D"
+            sum += 0x2D
+            sum = 0xFF - sum.bitwiseAnd(0xFF)
+            msg += String.valueOf(Character.toChars(sum))
+            logInfo("XBee", "Outgoing message ON: {}", msg)
+            XBeeString.sendCommand(msg)
+            XBeeMove_Forward.sendCommand(OFF)
+        }
+end
+
+rule "Left Rule"
+    when
+        Item XBeeMove_Left changed
+    then
+        if (XBeeMove_Left.state == ON) {
+            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u00E9\u00A3\u0094\u00FF\u00FE\u0000\u0000"
+            var int sum =                  0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0xE9+ 0xA3+ 0x94+ 0xFF+ 0xFE+ 0x00+ 0x00
+            //value: "l" character to turn left;
+            msg += "\u006C"
+            sum += 0x6C
+            sum = 0xFF - sum.bitwiseAnd(0xFF)
+            msg += String.valueOf(Character.toChars(sum))
+            logInfo("XBee", "Outgoing message ON: {}", msg)
+            XBeeString.sendCommand(msg)
+            java.lang.Thread.sleep(3000);
+            XBeeMove_Left.sendCommand(OFF)
+        }
+end
+
+rule "Right Rule"
+    when
+        Item XBeeMove_Right changed
+    then
+        if (XBeeMove_Right.state == ON) {
+            var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u00E9\u00A3\u0094\u00FF\u00FE\u0000\u0000"
+            var int sum =                   0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0xE9+ 0xA3+ 0x94+ 0xFF+ 0xFE+ 0x00+ 0x00
+            //value: "r" character to turn right  r in hex = 
+            msg += "\u0072"
+            sum += 0x72
+            sum = 0xFF - sum.bitwiseAnd(0xFF)
+            msg += String.valueOf(Character.toChars(sum))
+            logInfo("XBee", "Outgoing message ON: {}", msg)
+            XBeeString.sendCommand(msg)
+            java.lang.Thread.sleep(3000);
+            XBeeMove_Right.sendCommand(OFF)
+        }
+end
+
+rule "Speed Rule"
+    when
+        Item XBeeSpeed_Roomba changed
+    then
+        XBeeSpeed_Current.sendCommand(XBeeSpeed_Roomba.state.toString)
+        val int speed = (XBeeSpeed_Roomba.state as DecimalType).intValue()
+        val String hexString = XBeeSpeed_Roomba.state.toString
+        val String hexString2 = String.format("%02X", speed)
+        val int sliderHexIntValue = Integer.parseInt(hexString2, 16) + 30
+        logInfo("Hex Conversion", "Slider value: " + (sliderHexIntValue-30) + ", Hexadecimal: " + hexString)
+
+        var msg = "\u007E\u0000\u000F\u0010\u0000\u0000\u0013\u00A2\u0000\u0040\u00E9\u00A3\u0094\u00FF\u00FE\u0000\u0000"
+        var int sum =                  0x10+ 0x00+ 0x00+ 0x13+ 0xA2+ 0x00+ 0x40+ 0xE9+ 0xA3+ 0x94+ 0xFF+ 0xFE+ 0x00+ 0x00
+
+        switch (speed) {
+            case 0: {
+                msg += "\u0030" //msg = toSend ; toSend = "\\u003" + hexString -> \u00030
+                sum += 0x030
+            }
+            case 1: {
+                msg += "\u0031"
+                sum += 0x31
+            }
+            case 2: {
+                msg += "\u0032"
+                sum += 0x32
+            }
+            case 3: {
+                msg += "\u0033"
+                sum += 0x33
+            }
+            case 4: {
+                msg += "\u0034"
+                sum += 0x34
+            }    
+            case 5: {
+                msg += "\u0035"
+                sum += 0x35
+            }   
+            case 6: {
+                msg += "\u0036"
+                sum += 0x36
+            }  
+            case 7: {
+                msg += "\u0037"
+                sum += 0x37
+            }
+            case 8: {
+                msg += "\u0038"
+                sum += 0x38
+            }
+            case 9: {
+                msg += "\u0039"
+                sum += 0x39
+            } 
+            default:
+                throw new IllegalArgumentException("Invalid value: " + speed)
+        }
+        sum = 0xFF - sum.bitwiseAnd(0xFF)
+        msg += String.valueOf(Character.toChars(sum))
+        logInfo("XBee", "Roomba Speed: {}", msg)
+        XBeeString.sendCommand(msg)
+end
+
+rule "On Receive" 
+    when 
+        Item XBeeBinary changed
+    then
+        logInfo("Received", XBeeBinary.state.toString)
+        val byte[] bytes = RawType.valueOf(XBeeBinary.state.toString()).getBytes()
+
+        // Horizontal Sensor
+        var int horizontalSensor = bytes.get(15).bitwiseAnd(0xFF) * 256 + bytes.get(16).bitwiseAnd(0xFF)
+        logInfo("Horizontal Sensor", horizontalSensor.toString)
+        horizontal_sensor.postUpdate(horizontalSensor)
+
+        // Vertical Sensor
+        var int verticalSensor = bytes.get(17).bitwiseAnd(0xFF) * 256 + bytes.get(18).bitwiseAnd(0xFF)
+        logInfo("Vertical Sensor", verticalSensor.toString)
+        vertical_sensor.postUpdate(verticalSensor) 
+end

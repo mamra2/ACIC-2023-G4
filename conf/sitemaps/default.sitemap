@@ -5,8 +5,6 @@ sitemap default label="Main Menu" {
         Text item=MyDeviceIsOnline
         Switch item=Wallplug_Hall
         Default item=Telegram_Message
-        Default item=HS100Switch
-        Default item=HS100Rssi
     }
     Frame label="Lights" icon="light" {
         Group item=BedroomBulb
@@ -26,5 +24,17 @@ sitemap default label="Main Menu" {
     }
     Frame label="Device" icon="projector" {
         Group item=Home
+    }
+    Frame label="XBee" icon="shield" {
+        Switch item=XBeeMode_Automatic
+        Switch item=XBeeMode_Manual
+        Switch item=XBeeMove_Forward
+        Switch item=XBeeMove_Reverse
+        Switch item=XBeeMove_Left
+        Switch item=XBeeMove_Right
+        Slider item=XBeeSpeed_Roomba minValue=0 maxValue=9 step=1
+        Text item=XBeeSpeed_Current
+        Text item=XBeeSensor_Horizontal
+        Text item=XBeeSensor_Vertical
     }
 }

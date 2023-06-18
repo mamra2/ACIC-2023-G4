@@ -126,3 +126,11 @@ Thing mqtt:topic:generic "Generic MQTT Thing" (mqtt:broker:broker) {
 }
 
 // XBee
+Bridge serial:serialBridge:xbeesensors [ 
+    serialPort="COM4", // Check port
+    baudRate=9600, 
+    dataBits=8, 
+    parity="N", 
+    stopBits=1, 
+    charset="ISO-8859-1" 
+]
