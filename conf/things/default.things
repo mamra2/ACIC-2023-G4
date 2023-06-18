@@ -1,24 +1,24 @@
 // Device
-Thing network:pingdevice:mydevice "MobileDevice" [ 
+Thing network:pingdevice:mydevice "Device" [ 
     hostname="192.168.1.66", 
     refreshInterval=2000
 ]
 
 // TP-Link
-Thing tplinksmarthome:hs100:outlet "Outdoor Outlet" [
+Thing tplinksmarthome:hs100:outlet "TP-Link | Outlet" [
     ipAddress="192.168.8.176",
     deviceId="8006A0CD3C5CD3367DBBDD99149BF0771B1B015D",
     refresh=5
 ]
 
 // Telegram
-Thing telegram:telegramBot:telegrambot [ 
+Thing telegram:telegramBot:telegrambot "Telegram" [ 
     chatIds="1692342549", 
     botToken="6015714713:AAHb3KgNHc1XvKgi6ZXAdELo46cg9slDcIw" 
 ]
 
 // Twitter
-Thing twitter:account:account [ 
+Thing twitter:account:account "Twitter" [ 
     consumerKey="nK5Je0enSZphazgMkrY4NiHvG", 
     consumerSecret="GTBfpn9gKJhQRXbKf7fHgkJ7aQJ12fjMZki4zx0FfDyDX8jy0I", 
     accessToken="715177321746014209-rNZQcerR5GiyYzHLYg3uuCUpBQeNVkO", 
@@ -27,7 +27,7 @@ Thing twitter:account:account [
 ]
 
 // Mail
-Thing mail:smtp:smtp [ 
+Thing mail:smtp:smtp "Mail" [ 
     hostname="smtp.gmail.com", 
     sender="miguelromana93@gmail.com",
     security="STARTTLS", 
@@ -45,11 +45,11 @@ Thing icalendar:eventfilter:filter "Calendar Filter" (icalendar:calendar:calenda
 ]
 
 // Astro
-Thing astro:sun:home [ 
+Thing astro:sun:home "Astro | Sun" [ 
     geolocation="38.74909954079374,-9.153553816217409", 
     interval=60 
 ]
-Thing astro:moon:home [ 
+Thing astro:moon:home "Astro | Moon" [ 
     geolocation="38.74909954079374,-9.153553816217409", 
     interval=60 
 ]
@@ -60,56 +60,58 @@ Bridge openweathermap:weather-api:api "OpenWeatherMap" [
     refreshInterval=60, 
     language="en" 
 ] { 
-    Thing weather-and-forecast local "Local Weather And Forecast" [ 
+    Thing weather-and-forecast local "OpenWeatherMap (Local)" [ 
         location="38.74909954079374,-9.153553816217409", 
         forecastHours=24, 
         forecastDays=7 
     ]
 }
 
-// Lights
-Bridge hue:bridge:mybridge [ 
+// Hue
+Bridge hue:bridge:mybridge "Hue | Bridge" [ 
     ipAddress="192.168.8.193", 
     userName="qi52KySKTZ9dBb3lYkSCi17povASXFGsxqT3-qmH",
-    protocol="http" //is it really needed (with router?)?
+    protocol="http"
 ] { 
-    group bed-bulbs "Bedroom Bulbs" [groupId="2"]
-    0210 bulb1 "Bulb 1" [lightId="5"] //colour
-    0220 bulb2 "Bulb 2" [lightId="4"] //ambiance
-    0820 dimmer1 "Dimmer Switch" [sensorId="2"]    
+    group bedroom_bulbs "Hue | Bedroom Bulbs" [groupId="2"]
+    0210 bulb_color "Hue | Bulb (Color)" [lightId="5"]
+    0220 bulb_ambiance "Hue | Bulb | (Ambiance)" [lightId="4"]
+    0820 dimmer_switch "Hue | Dimmer Switch" [sensorId="2"]    
 }
 
 // ConBee
-Bridge deconz:deconz:homeserver [ 
+Bridge deconz:deconz:homeserver "ConBee" [ 
     host="172.26.160.1", 
     apikey="F58F8E5B05"
 ] { 
-    dimmablelight tradfor "Tradfor" [id="2"]
-    dimmablelight phue-amb "PHue Ambiance" [id="4"]    
+    dimmablelight tradfor "ConBee | Tradfor" [id="2"]
+    dimmablelight hue_ambiance "ConBee | Hue Ambiance" [id="4"]    
 }
 
 // Z-Stick
-Bridge zwave:serial_zstick:controller "ZWave Controller" [ 
-    port="COM4", 
+Bridge zwave:serial_zstick:controller "Z-Wave" [ 
+    port="COM4", // Check port
     controller_softreset="false", 
     controller_master="true", 
     heal_enable="true", 
     security_networkkey="Olhaafoto" 
 ] {
-    fibaro_fgdw002_00_000 door_sensor "Door/Window Sensor 2" [node_id=5]
-	fibaro_fgms001_03_002 motion_sensor "Motion Sensor" [node_id=3]
-	aeon_zw130_00_000 wallmote "WallMote Quad" [node_id=4]
+    fibaro_fgdw002_00_000 door_sensor "Z-Wave | Door/Window Sensor 2" [node_id=5]
+	fibaro_fgms001_03_002 motion_sensor "Z-Wave | Motion Sensor" [node_id=2]
+	aeon_zw130_00_000 wallmote "Z-Wave | WallMote Quad" [node_id=3]
+    aeon_zw111_02_003 nano_dimmer "Z-Wave | Nano Dimmer" [node_id=6]
+    aeon_dsd31_00_000 siren "Z-Wave | Siren" [node_id=4]
 }
 
 // LoRa
-Bridge mqtt:broker:broker "MQTT Broker" [
+Bridge mqtt:broker:broker "MQTT | Broker" [
     host="eu1.cloud.thethings.network",
     secure="true",
     enableDiscovery="false",
     username="ttn-backdior-app@ttn",
     password="NNSXS.L6WTTIK2XRNFGBEFATSJBKVDRPEBIZI4X3C422Y.2Z4JDROCO4FBC6M3QIL6YWIBWAVG2GYZ6YW3F6TSBIFBTFRAZXVQ"
 ]
-Thing mqtt:topic:generic "Generic MQTT Thing" (mqtt:broker:broker) {
+Thing mqtt:topic:generic "MQTT | Topic" (mqtt:broker:broker) {
     Channels:
         Type number:temperature "Air Temperature" [ 
             stateTopic="v3/ttn-backdior-app@ttn/devices/eui-0025ca0a00014919/up",
@@ -126,7 +128,7 @@ Thing mqtt:topic:generic "Generic MQTT Thing" (mqtt:broker:broker) {
 }
 
 // XBee
-Bridge serial:serialBridge:xbeesensors [ 
+Bridge serial:serialBridge:xbeesensors "XBee" [ 
     serialPort="COM4", // Check port
     baudRate=9600, 
     dataBits=8, 

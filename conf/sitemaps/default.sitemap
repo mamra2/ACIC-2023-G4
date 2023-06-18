@@ -8,15 +8,15 @@ sitemap default label="Main Menu" {
     }
     Frame label="Lights" icon="light" {
         Group item=BedroomBulb
-        Switch item=Light_Switch
-        Selection item=Light_Scene
+        Switch item=Hue_Switch
+        Selection item=Hue_Scene
             mappings=[
                 1="Galaxy",
                 2="Starlight", 
                 3="Tokyo"
             ]
-        Slider item=Light_Color_Temperature
-        Default item=Light_Dimmer_Switch
+        Slider item=Hue_Color_Temperature
+        Default item=Hue_Dimmer_Switch
         Slider item=Con_Light_Dimmer
     }
     Frame label="Services" icon="mediacontrol" {

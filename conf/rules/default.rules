@@ -118,37 +118,37 @@ rule "Send IFTTT Notification"
         logInfo("IFTTT_URL", "IFTTT Notification sent to URL:\nURL = \"{}\"", iftttURL)
 end
 
-// Lights
-rule "Change Lights' Scenes"
+// Hue
+rule "Change Hue Lights' Scenes"
     when
-        Item Light_Scene changed
+        Item Hue_Scene changed
     then
         // Scenes
         val scene1 = "tGv0HmDPovDIDS5" //Galaxy
         val scene2 = "FiyWWJ38qDsQT7T" //Starlight
         val scene3 = "c6AsULknbI3J74M" //Tokyo
 
-        val scene = Light_Scene.state
+        val scene = Hue_Scene.state
 	    switch(scene) {
             case "1", case scene1: {
-                Light_Scene.sendCommand(scene1)
+                Hue_Scene.sendCommand(scene1)
                 scene = "Galaxy"
             }
             case "2", case scene2: {
-                Light_Scene.sendCommand(scene2)
+                Hue_Scene.sendCommand(scene2)
                 scene = "Starlight"
             }
             case "3", case scene3: {
-                Light_Scene.sendCommand(scene3)
+                Hue_Scene.sendCommand(scene3)
                 scene = "Tokyo"
             }
         }
         logInfo("HueScene", "Philips Hue lights changed scene to \"{}\"", scene)
 end
 
-rule "Control Lights (with dimmer switch)"
+rule "Control Hue Lights (with dimmer switch)"
     when
-        Channel "hue:0820:mybridge:dimmer1:dimmer_switch_event" triggered
+        Channel "hue:0820:mybridge:dimmer_switch:dimmer_switch_event" triggered
     then
         val event = receivedEvent
 	    switch(event) {

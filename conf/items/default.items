@@ -22,7 +22,7 @@ Group WebService "Web Service" <qualityofservice> (AlarmSystem) ["WebService"]
 Group WeatherService "Weather Service" <sun_clouds> (WebService) ["WeatherService"]
 //Equipment
 Group Device "Device" <screen> (AlarmSystem) ["Smartphone"]
-Group TP_Link "Outlet" <poweroutlet> (AlarmSystem) ["PowerOutlet"]
+Group TP_Link "TP-Link" <poweroutlet> (AlarmSystem) ["PowerOutlet"]
 Group LoRa "LoRaWAN" <sensor> (AlarmSystem) ["Sensor"]
 Group XBee "XBee" <sensor> (AlarmSystem) ["Sensor"]
 Group Z_Stick "Z-Stick" <sensor> (AlarmSystem) ["Sensor"]
@@ -50,10 +50,10 @@ DateTime MyDeviceLastSeen "Last Seen [%1$tT %1$td/%1$tm/%1$ty]" <camera> (Device
 }
 
 // TP-Link
-Switch HS100Switch "Outlet Power" <poweroutlet> (TP_Link) ["Switch", "Power"] {
+Switch Outlet_Switch "Outlet Power" <poweroutlet> (TP_Link) ["Switch", "Power"] {
     channel="tplinksmarthome:hs100:outlet:switch"
 }
-Number:Power HS100Rssi "Wi-Fi Signal [%d %unit%]" <network> (TP_Link) ["Switch", "Power"] {
+Number:Power Outlet_RSSI "Wi-Fi Signal [%d %unit%]" <network> (TP_Link) ["Switch", "Power"] {
     channel="tplinksmarthome:hs100:outlet:rssi"
 }
 
@@ -121,41 +121,67 @@ Image LocalCurrent_ConditionIcon "Condition for today (Icon)" <sun_clouds> (Open
     channel="openweathermap:weather-and-forecast:api:local:current#icon" 
 }
 
-// Lights
-Switch Light_Switch "Light Switch" <wallswitch> (BedroomBulb) ["Switch"] { 
-    channel="hue:group:mybridge:bed-bulbs:switch"
-//    channel="hue:0210:mybridge:bulb1:color",
-//    channel="hue:0220:mybridge:bulb2:brightness"
+// Hue
+Switch Hue_Switch "Hue Light Switch" <wallswitch> (BedroomBulb) ["Switch"] { 
+    channel="hue:group:mybridge:bedroom_bulbs:switch"
+//    channel="hue:0210:mybridge:bulb_color:color",
+//    channel="hue:0220:mybridge:bulb_ambiance:brightness"
 }
-String Light_Scene "Light Scene" <rgb> (BedroomBulb) ["Control", "Light"] { 
+String Hue_Scene "Hue Scene" <rgb> (BedroomBulb) ["Control", "Light"] { 
     channel="hue:bridge:mybridge:scene"
 }
-Color Light_Color "Light Color" <colorwheel> (BedroomBulb) ["Light"] { 
-    channel="hue:0210:mybridge:bulb1:color"
+Color Hue_Color "Hue Color" <colorwheel> (BedroomBulb) ["Light"] { 
+    channel="hue:0210:mybridge:bulb_color:color"
 }
-Dimmer Light_Color_Temperature "Light Color Temperature [%s %%]" <temperature> (BedroomBulb) ["ColorTemperature"] { 
-    channel="hue:0210:mybridge:bulb1:color_temperature",
-    channel="hue:0220:mybridge:bulb2:color_temperature"
+Dimmer Hue_Color_Temperature "Hue Color Temperature [%s %%]" <temperature> (BedroomBulb) ["ColorTemperature"] { 
+    channel="hue:0210:mybridge:bulb_color:color_temperature",
+    channel="hue:0220:mybridge:bulb_ambiance:color_temperature"
 }
-Number Light_Dimmer_Switch "Light Dimmer Switch" <wallswitch> (BedroomBulb) ["Control", "Light"] { 
-    channel="hue:0820:mybridge:dimmer1:dimmer_switch"
+Number Hue_Dimmer_Switch "Hue Dimmer Switch" <wallswitch> (BedroomBulb) ["Control", "Light"] { 
+    channel="hue:0820:mybridge:dimmer_switch:dimmer_switch"
 }
 
 // ConBee
 Dimmer Con_Light_Dimmer "Con Light Dimmer" <wallswitch> (BedroomBulb) ["ColorTemperature"] { 
     channel="deconz:dimmablelight:homeserver:tradfor:brightness",
-    channel="deconz:dimmablelight:homeserver:phue-amb:brightness"
+    channel="deconz:dimmablelight:homeserver:hue_ambiance:brightness"
 }
 
 // Z-Stick
+//Door Sensor
 Contact Door_Sensor "Door Sensor" <frontdoor> (Z_Stick, GroundFloor) ["Measurement", "Presence"] { 
     channel="zwave:fibaro_fgdw002_00_000:controller:door_sensor:sensor_door" 
 }
+Number Door_Sensor_Battery "Door Sensor Battery [%.2f %%]" <batterylevel> (Z_Stick, FirstFloor) ["Measurement", "Energy"] { 
+    channel="zwave:fibaro_fgdw002_00_000:controller:door_sensor:battery-level"
+}
+//Motion Sensor
 Switch Motion_Alarm "Motion Alarm" <motion> (Z_Stick, FirstFloor) ["MotionDetector"] { 
     channel="zwave:fibaro_fgms001_03_002:controller:motion_sensor:alarm_motion"
 }
+Number Motion_Alarm_Battery "Motion Alarm Battery [%.2f %%]" <batterylevel> (Z_Stick, FirstFloor) ["Measurement", "Energy"] { 
+    channel="zwave:fibaro_fgms001_03_002:controller:motion_sensor:battery-level"
+}
+Number Motion_Alarm_Temperature "Motion Alarm Temperature [%.2f %unit%]" <temperature> (Z_Stick, FirstFloor) ["Measurement", "Temperature"] { 
+    channel="zwave:fibaro_fgms001_03_002:controller:motion_sensor:sensor_temperature"
+}
+//Wallmote Quad
+Number WallMote_Button "WallMote Quad [%s]" <wallswitch> (Z_Stick, LivingRoom) ["Prensence"] { 
+    channel="zwave:aeon_zw130_00_000:controller:wallmote:scene_number" 
+}
 Switch WallMote_Button1 "WallMote Quad Button 1" <wallswitch> (Z_Stick, LivingRoom) ["Measurement", "Presence"] { 
     channel="zwave:aeon_zw130_00_000:controller:wallmote:basic_switch_binary1" 
+}
+//Siren
+Switch Siren "Siren" <alarm> (Z_Stick, LivingRoom) ["Presence"] { 
+    channel="zwave:aeon_dsd31_00_000:controller:siren:switch_binary" 
+}
+//Nano Dimmer
+Dimmer Dime "Dimmer" <temperature> (Z_Stick, LivingRoom) ["ColorTemperature"] { 
+    channel="zwave:aeon_zw111_02_003:controller:nano_dimmer:switch_dimmer" 
+}
+Number Dime_Voltage "Voltage [%s]" <energy> (Z_Stick, LivingRoom) ["Energy"] { 
+    channel="zwave:aeon_zw111_02_003:controller:nano_dimmer:meter_voltage" 
 }
 
 // LoRa
@@ -170,14 +196,14 @@ String LoRa_BatteryLevel "Battery Level" <batterylevel> (LoRa) ["Measurement", "
 }
 
 // XBee
-// For serial communication
+//For communication
 String XBeeString "XBee String" <light> (XBee) { 
     channel="serial:serialBridge:xbeesensors:string"
 }
 String XBeeBinary "XBee Binary" <light> (XBee) { 
     channel="serial:serialBridge:xbeesensors:binary"
 }
-// For analysis
+//For analysis
 Switch XBeeMode_Automatic "Automatic Mode" <switch> (XBee)
 Switch XBeeMode_Manual "Manual Mode" <switch> (XBee)
 Switch XBeeMove_Forward "Go Forward (Clock Wise)" <movecontrol> (XBee)
