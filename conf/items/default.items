@@ -128,6 +128,12 @@ Dimmer Light_Color_Temperature "Light Color Temperature [%s %%]" <temperature> (
     channel="hue:0210:mybridge:bulb1:color_temperature",
     channel="hue:0220:mybridge:bulb2:color_temperature"
 }
+Number Light_Dimmer_Switch "Light Dimmer Switch" <wallswitch> (BedroomBulb) ["Control", "Light"] { 
+    channel="hue:0820:mybridge:dimmer1:dimmer_switch"
+}
+DateTime Light_Dimmer_Switch_Last_Press "Light Dimmer Switch Last Pressed" <projector> (BedroomBulb) ["Control"] { 
+    channel="hue:0820:mybridge:dimmer1:last_updated"
+}
 
 // ConBee
 Dimmer Con_Light_Dimmer "Con Light Dimmer" <wallswitch> (BedroomBulb) ["ColorTemperature"] { 

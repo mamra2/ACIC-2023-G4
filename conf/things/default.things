@@ -67,8 +67,9 @@ Bridge hue:bridge:mybridge [
     protocol="http" //is it really needed (with router?)?
 ] { 
     group bed-bulbs "Bedroom Bulbs" [groupId="2"]
-    0210 bulb1 "Bulb 1" [lightId="5"]
-    0220 bulb2 "Bulb 2" [lightId="4"]
+    0210 bulb1 "Bulb 1" [lightId="5"] //colour
+    0220 bulb2 "Bulb 2" [lightId="4"] //ambiance
+    0820 dimmer1 "Dimmer Switch" [sensorId="2"]    
 }
 
 // ConBee

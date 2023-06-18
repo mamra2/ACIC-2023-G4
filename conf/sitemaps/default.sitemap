@@ -9,13 +9,15 @@ sitemap default label="Main Menu" {
     Frame label="Lights" icon="light" {
         Group item=BedroomBulb
         Switch item=Light_Switch
-        Selection item=Light_Scene 
+        Selection item=Light_Scene
             mappings=[
                 "xilq3BY6P5fK-QZ"="Galaxy", 
                 "Hyc749a5uce5AvC"="Starlight", 
                 "dlsWwGftKq61u6q"="Tokyo"
             ]
-        Slider item=Light_Color_Temperature sendFrequency=2000
+        Slider item=Light_Color_Temperature
+        Default item=Light_Dimmer_Switch
+        Default item=Light_Dimmer_Switch_Last_Press
         Slider item=Con_Light_Dimmer
     }
     Frame label="Services" icon="mediacontrol" {
