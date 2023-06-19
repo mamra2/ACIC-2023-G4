@@ -85,7 +85,6 @@ Bridge deconz:deconz:homeserver "ConBee" [
     apikey="F58F8E5B05"
 ] { 
     dimmablelight tradfor "ConBee | Tradfor" [id="2"]
-    dimmablelight hue_ambiance "ConBee | Hue Ambiance" [id="4"]    
 }
 
 // Z-Stick

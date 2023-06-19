@@ -143,8 +143,7 @@ Number Hue_Dimmer_Switch "Hue Dimmer Switch" <wallswitch> (BedroomBulb) ["Contro
 
 // ConBee
 Dimmer Con_Light_Dimmer "Con Light Dimmer" <wallswitch> (BedroomBulb) ["ColorTemperature"] { 
-    channel="deconz:dimmablelight:homeserver:tradfor:brightness",
-    channel="deconz:dimmablelight:homeserver:hue_ambiance:brightness"
+    channel="deconz:dimmablelight:homeserver:tradfor:brightness"
 }
 
 // Z-Stick
