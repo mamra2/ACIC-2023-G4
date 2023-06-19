@@ -128,7 +128,7 @@ rule "Change Hue Lights' Scenes"
         val scene2 = "FiyWWJ38qDsQT7T" //Starlight
         val scene3 = "c6AsULknbI3J74M" //Tokyo
 
-        val scene = Hue_Scene.state
+        var scene = Hue_Scene.state.toString
 	    switch(scene) {
             case "1", case scene1: {
                 Hue_Scene.sendCommand(scene1)
@@ -371,10 +371,10 @@ rule "On Receive"
         // Horizontal Sensor
         var int horizontalSensor = bytes.get(15).bitwiseAnd(0xFF) * 256 + bytes.get(16).bitwiseAnd(0xFF)
         logInfo("Horizontal Sensor", horizontalSensor.toString)
-        horizontal_sensor.postUpdate(horizontalSensor)
+        horizontalSensor.postUpdate(horizontalSensor)
 
         // Vertical Sensor
         var int verticalSensor = bytes.get(17).bitwiseAnd(0xFF) * 256 + bytes.get(18).bitwiseAnd(0xFF)
         logInfo("Vertical Sensor", verticalSensor.toString)
-        vertical_sensor.postUpdate(verticalSensor) 
+        verticalSensor.postUpdate(verticalSensor) 
 end
