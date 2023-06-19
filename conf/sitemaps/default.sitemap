@@ -7,6 +7,8 @@ sitemap default label="Main Menu" {
         Default item=Telegram_Message
     }
     Frame label="Lights" icon="light" {
+        Default item=Outlet_Switch
+        Group item=Z_Stick
         Group item=BedroomBulb
         Switch item=Hue_Switch
         Selection item=Hue_Scene
@@ -16,8 +18,6 @@ sitemap default label="Main Menu" {
                 3="Tokyo"
             ]
         Slider item=Hue_Color_Temperature
-        Default item=Hue_Dimmer_Switch
-        Slider item=Con_Light_Dimmer
     }
     Frame label="Services" icon="mediacontrol" {
         Group item=AlarmSystem

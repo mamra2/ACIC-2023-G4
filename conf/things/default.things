@@ -95,10 +95,10 @@ Bridge zwave:serial_zstick:controller "Z-Wave" [
     heal_enable="true", 
     security_networkkey="Olhaafoto" 
 ] {
-    fibaro_fgdw002_00_000 door_sensor "Z-Wave | Door/Window Sensor 2" [node_id=5]
+    fibaro_fgdw002_00_000 door_sensor "Z-Wave | Door/Window Sensor 2" [node_id=6]
 	fibaro_fgms001_03_002 motion_sensor "Z-Wave | Motion Sensor" [node_id=2]
 	aeon_zw130_00_000 wallmote "Z-Wave | WallMote Quad" [node_id=3]
-    aeon_zw111_02_003 nano_dimmer "Z-Wave | Nano Dimmer" [node_id=6]
+    aeon_zw111_02_003 nano_dimmer "Z-Wave | Nano Dimmer" [node_id=5]
     aeon_dsd31_00_000 siren "Z-Wave | Siren" [node_id=4]
 }
 

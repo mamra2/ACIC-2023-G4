@@ -20,8 +20,6 @@ rule "Receive Message (on Telegram)"
     then
         var message = Telegram_Message.state.toString
         //val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
-        // Send message to colleague
-        telegramBot.sendTelegram(5680556583L, "This is a message for you, Henrique!")
         if (message == "ON" || message == "OFF") {
             Test_Switch.sendCommand(message)
             telegramBot.sendTelegram("Switch changed state to " + message)
@@ -119,6 +117,18 @@ rule "Send IFTTT Notification"
 end
 
 // Hue
+rule "Change Hue Lights' Color"
+    when
+//        Item Test_Switch received update
+        Item Telegram_Message received update "Change colors"
+    then
+        //Change <Color>
+        val hsb = <Color> as HSBType
+        val hueActions1 = getActions("hue","hue:0210:mybridge:bulb_color")
+        hueActions1.fadingLightCommand("color", hsb.brightness, new DecimalType(1000))
+        logInfo("HSB", "HSB values: {},{},{}", hsb.hue, hsb.saturation, hsb.brightness)
+end
+
 rule "Change Hue Lights' Scenes"
     when
         Item Hue_Scene changed
