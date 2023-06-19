@@ -371,10 +371,10 @@ rule "On Receive"
         // Horizontal Sensor
         var int horizontalSensor = bytes.get(15).bitwiseAnd(0xFF) * 256 + bytes.get(16).bitwiseAnd(0xFF)
         logInfo("Horizontal Sensor", horizontalSensor.toString)
-        horizontalSensor.postUpdate(horizontalSensor)
+        XBeeSensor_Horizontal.postUpdate(horizontalSensor)
 
         // Vertical Sensor
         var int verticalSensor = bytes.get(17).bitwiseAnd(0xFF) * 256 + bytes.get(18).bitwiseAnd(0xFF)
         logInfo("Vertical Sensor", verticalSensor.toString)
-        verticalSensor.postUpdate(verticalSensor) 
+        XBeeSensor_Vertical.postUpdate(verticalSensor) 
 end
