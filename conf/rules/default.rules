@@ -11,48 +11,12 @@ val changeColorToRed = [ |
         logInfo("HSB", "HSB values: {}, {}, {}", hsb.hue, hsb.saturation, hsb.brightness)
 ]
 
-//TODO: Chuva mandar notificação para levar guarda-chuva
-
-
-
-
 // Device & Wallpug
-// TODO: Delete this rule?
 rule "Toggle Wallplug"
     when
         Item MyDeviceIsOnline changed
     then
         Wallplug_Hall.sendCommand(MyDeviceIsOnline.state.toString)
-end
-
-// Telegram
-rule "Receive Message (on Telegram)"
-    when 
-        //Change this trigger message
-        Item Telegram_Message received update "message test" or
-        Item Telegram_Message received update "ON" or
-        Item Telegram_Message received update "OFF"
-    then
-        var message = Telegram_Message.state.toString
-        //val telegramBot = getActions("telegram","telegram:telegramBot:telegrambot")
-        if (message == "ON" || message == "OFF") {
-            Test_Switch.sendCommand(message)
-            telegramBot.sendTelegram("Switch changed state to " + message)
-        }
-        else {
-            telegramBot.sendTelegram("Switch didn't change state because the message sent was \n\"" + message + "\"")
-        }
-end
-
-rule "Start cleaning when event starts"
-    when 
-        Item Telegram_Message received update "Cleaning started" or
-        Item Telegram_Message received update "Cleaning ended"
-    then
-        XBeeMode_Automatic.sendCommand(ON)
-        telegramBot.sendTelegram(Outlet_Switch.name + "'s state was set to " + Outlet_Switch.state.toString + ", as expected.")
-        telegramBot.sendTelegram("The message defined in the calendar event's description was \n\"" + Telegram_Message.state.toString + "\"")
-        telegramBot.sendTelegramQuery("Do you also want to receive a notification through other services?", "Telegram_Reply", "Send e-mail", "Send IFTTT", "No, thanks")
 end
 
 rule "Reply (on Telegram)"
@@ -65,16 +29,6 @@ rule "Reply (on Telegram)"
             else if (message == "Send IFTTT") ("IFTTT")
             else if (message == "No, thanks") ("No"))
         telegramBot.sendTelegramAnswer(Telegram_ReplyId.state.toString, notificationConfirmation + " notification was sent.")
-end
-
-rule "Raining men"
-    when
-        Item Test_Switch received update
-//        Item LocalCurrent_RainVolume.state < 0.1
-//        Item LocalCurrent_RainVolume.state > 0.3|mm
-    then
-        logInfo("Rain", "It's raining men")
-        //telegramBot.sendTelegram("WARNING: It's raining. Leva chapéu.")
 end
 
 // Mail
@@ -127,30 +81,7 @@ rule "Sunset changes lights' scene"
         logInfo("HueScene", "Philips Hue lights changed scene to \"{}\"", sceneName)
 end
 
-// Pending Testing (To remove)
-rule "Door Sensor State Update"
-    when 
-        Item Door_Sensor received update
-    then
-        logInfo("Door_Sensor", Door_Sensor.state.toString)
-end
-
-rule "Motion Alarm Triggered"
-    when
-        Item Test_Switch changed or
-        Item Motion_Alarm changed or
-        Item Door_Sensor.state.toString == "open"
-    then
-        if (Test_Switch.state == ON) {
-            telegramBot.sendTelegram("INTRUDER ALERT!")
-            Con_Light_Dimmer.sendCommand(50)
-            changeColorToRed.apply()
-        }
-        Con_Light_Dimmer.sendCommand(2)
-        Hue_Switch.sendCommand(Motion_Alarm.state.toString)
-        Siren.sendCommand(Motion_Alarm.state.toString)
-end
-
+// Hue
 rule "Control Hue Color Temperature (with dimmer switch)"
     when
         Channel "hue:0820:mybridge:dimmer_switch:dimmer_switch_event" triggered
@@ -162,10 +93,69 @@ rule "Control Hue Color Temperature (with dimmer switch)"
         }
 end
 
-//Alarme
-//TODO: Ligar Hues e Tradfor
+// Pending Testing (To remove)
+rule "Door Sensor State Update"
+    when 
+        Item Door_Sensor received update
+    then
+        logInfo("Door_Sensor", Door_Sensor.state.toString)
+end
 
+// Pending Testing (Check Con Dimmer)
+rule "Motion Alarm Triggered"
+    when
+        Item Test_Switch changed
+//        Item Motion_Alarm changed or
+//        Item Door_Sensor.state.toString == "open"
+    then
+        if (Test_Switch.state == ON) {
+            telegramBot.sendTelegram("INTRUDER ALERT!")
+            Con_Light_Dimmer.sendCommand(50)
+            changeColorToRed.apply()
+        }
+        if (Test_Switch.state == OFF)
+            Con_Light_Dimmer.sendCommand(0)
+        Hue_Switch.sendCommand(Motion_Alarm.state.toString)
+        Siren.sendCommand(Motion_Alarm.state.toString)
+end
+
+//TODO: Chuva mandar notificação para levar guarda-chuva
+//TODO: Wallmote Quad e Nano Dimmer
 //TODO: Avisar quando tiver a 20% bateria [Door Sensor, Motion Sensor, LoRa] (E-mail)
+
+rule "Battery Warning"
+    when
+//        Item Test_Switch received update
+//        Item Door_Sensor_Battery < 20 or
+//        Item Motion_Alarm_Battery < 20 or
+//        Item LoRa_BatteryLevel == "0-20%"
+    then
+        logInfo("BatteryWarning", "WARNING: \"Battery is low and it's getting dark!\"")
+        telegramBot.sendTelegram("WARNING: \"Battery is low and it's getting dark!\"\nYou should replace it.")
+end
+
+rule "Rain Warning"
+    when
+        Item Test_Switch received update
+//        Item LocalCurrent_RainVolume.state < 0.1
+//        Item LocalCurrent_RainVolume.state > 0.3|mm
+    then
+        logInfo("RainWarning", "WARNING: It's raining. Leva chapéu.")
+        //telegramBot.sendTelegram("WARNING: It's raining. Leva chapéu.")
+end
+
+
+
+rule "Start cleaning when event starts"
+    when 
+        Item Telegram_Message received update "Cleaning started" or
+        Item Telegram_Message received update "Cleaning ended"
+    then
+        XBeeMode_Automatic.sendCommand(ON)
+        telegramBot.sendTelegram(Outlet_Switch.name + "'s state was set to " + Outlet_Switch.state.toString + ", as expected.")
+        telegramBot.sendTelegram("The message defined in the calendar event's description was \n\"" + Telegram_Message.state.toString + "\"")
+        telegramBot.sendTelegramQuery("Do you also want to receive a notification through other services?", "Telegram_Reply", "Send e-mail", "Send IFTTT", "No, thanks")
+end
 
 // XBee
 rule "XBee Automatic Mode"
