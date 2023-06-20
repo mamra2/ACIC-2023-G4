@@ -11,31 +11,28 @@ Group Kitchen "Kitchen" <kitchen> (GroundFloor) ["Kitchen"]
 Group FirstFloor "FirstFloor" <firstfloor> (Home) ["FirstFloor"]
 Group Bedroom "Bedroom" <bedroom> (FirstFloor) ["Bedroom"]
 Group Bathroom "Bathroom" <bath> (FirstFloor) ["Bathroom"]
-Group BedroomBulb "BedroomBulb" <lightbulb> (Bedroom) ["Lightbulb"]
+Group Lights "Lights" <lightbulb> (Bedroom) ["Lightbulb"]
 
 //Outdoor
 Group Outdoor "Outdoor" <terrace> ["Outdoor"]
 Group Garden "Garden" <garden> (Outdoor) ["Garden"]
 //Equipment groups
-Group AlarmSystem "Alarm System" <alarm> (Garden) ["AlarmSystem"]
+Group AlarmSystem "Alarm System" <alarm> ["AlarmSystem"]
 Group WebService "Web Service" <qualityofservice> (AlarmSystem) ["WebService"]
+Group Application "Application" <screen> (WebService) ["WebService"]
 Group WeatherService "Weather Service" <sun_clouds> (WebService) ["WeatherService"]
 //Equipment
-Group Device "Device" <screen> (AlarmSystem) ["Smartphone"]
-Group TP_Link "TP-Link" <poweroutlet> (AlarmSystem) ["PowerOutlet"]
-Group LoRa "LoRaWAN" <sensor> (AlarmSystem) ["Sensor"]
-Group XBee "XBee" <sensor> (AlarmSystem) ["Sensor"]
-Group Z_Stick "Z-Stick" <sensor> (AlarmSystem) ["Sensor"]
-Group Application "Application" <screen> (WebService) ["WebService"]
-Group Activities "Activities" <party> (Application) ["WebService"]
-Group Telegram "Telegram" <flow> (Application) ["WebService"]
-Group Twitter "Twitter" <mediacontrol> (Application) ["WebService"]
-Group Astro "Astro" <sun> (WeatherService) ["WeatherService"]
-Group OpenWeather "Open Weather" <sun_clouds> (WeatherService) ["WeatherService"]
+Group Device "Device" <screen> (AlarmSystem, GroundFloor) ["Smartphone"]
+Group TP_Link "TP-Link" <poweroutlet> (AlarmSystem, Bathroom) ["PowerOutlet"]
+Group LoRa "LoRaWAN" <sensor> (AlarmSystem, Garden) ["Sensor"]
+Group XBee "XBee" <sensor> (AlarmSystem, LivingRoom) ["Sensor", "CleaningRobot"]
+Group Z_Stick "Z-Stick" <sensor> (AlarmSystem, Kitchen) ["Sensor"]
 
+Group Calendar "Calendar" <party> (Application, Indoor) ["WebService"]
+Group Telegram "Telegram" <flow> (Application, FirstFloor) ["WebService"]
 
-// For Testing Purposes
-Switch Test_Switch "Test Switch" <switch> (Bathroom) ["WallSwitch"]
+Group Astro "Astro" <sun> (WeatherService, Outdoor) ["WeatherService"]
+Group OpenWeather "Open Weather" <sun_clouds> (WeatherService, Outdoor) ["WeatherService"]
 
 // Device
 Switch Wallplug_Hall "Wallplug" <poweroutlet_us> (Home) ["WallSwitch"]
@@ -49,21 +46,21 @@ Switch Outlet_Switch "Outlet Power" <poweroutlet> (TP_Link) ["Switch", "Power"] 
 }
 
 // Telegram
-String Telegram_Message "Telegram Message" <text> (Telegram) ["Alarm"] { 
+String Telegram_Message "Telegram Message" <text> (Telegram) ["Alarm", "Presence"] { 
     channel = "telegram:telegramBot:telegrambot:lastMessageText" 
 }
-String Telegram_ReplyId "Telegram Reply Id" <suitcase> (Telegram) ["Alarm"] { 
+String Telegram_ReplyId "Telegram Reply Id" <suitcase> (Telegram) ["Alarm", "Presence"] { 
     channel = "telegram:telegramBot:telegrambot:replyId" 
 }
 
-// iCalendar
-String Current_Event "Current Event" <calendar> (Activities) ["Alarm"] { 
+// Calendar
+String Current_Event "Current Event" <calendar> (Calendar) ["Alarm", "Presence"] { 
     channel="icalendar:calendar:calendar:current_title" 
 }
-DateTime Current_Event_Start "Current Event start [%1$tR %1$ta %1$tF]" <time> (Activities) ["Alarm"] {
+DateTime Current_Event_Start "Current Event start [%1$tR %1$ta %1$tF]" <time> (Calendar) ["Alarm", "Presence"] {
     channel="icalendar:calendar:calendar:current_start"
 }
-DateTime Current_Event_End "Current Event end [%1$tR %1$ta %1$tF]" <time> (Activities) ["Alarm"] {
+DateTime Current_Event_End "Current Event end [%1$tR %1$ta %1$tF]" <time> (Calendar) ["Alarm", "Presence"] {
     channel="icalendar:calendar:calendar:current_end"
 }
 
@@ -81,53 +78,53 @@ Number:Length LocalCurrent_RainVolume "Rain volume [%.2f %unit%]" <rain> (OpenWe
 }
 
 // Hue
-Switch Hue_Switch "Hue Light Switch" <wallswitch> (BedroomBulb) ["Switch"] { 
+Switch Hue_Switch "Hue Light Switch" <wallswitch> (Lights) ["Switch", "Light"] { 
     channel="hue:group:mybridge:bedroom_bulbs:switch"
 }
-String Hue_Scene "Hue Scene" <rgb> (BedroomBulb) ["Control", "Light"] { 
+String Hue_Scene "Hue Scene" <rgb> (Lights) ["Control", "Light"] { 
     channel="hue:bridge:mybridge:scene"
 }
-Color Hue_Color "Hue Color" <colorwheel> (BedroomBulb) ["Light"] { 
+Color Hue_Color "Hue Color" <colorwheel> (Lights) ["Control", "Light"] { 
     channel="hue:0210:mybridge:bulb_color:color"
 }
-Dimmer Hue_Color_Temperature "Hue Color Temperature [%s %%]" <temperature> (BedroomBulb) ["ColorTemperature"] { 
+Dimmer Hue_Color_Temperature "Hue Color Temperature [%s %%]" <temperature> (Lights) ["Control", "ColorTemperature"] { 
     channel="hue:0210:mybridge:bulb_color:color_temperature",
     channel="hue:0220:mybridge:bulb_ambiance:color_temperature"
 }
-Number Hue_Dimmer_Switch "Hue Dimmer Switch" <wallswitch> (BedroomBulb) ["Control", "Light"] { 
+Number Hue_Dimmer_Switch "Hue Dimmer Switch" <wallswitch> (Lights) ["Control", "Light"] { 
     channel="hue:0820:mybridge:dimmer_switch:dimmer_switch"
 }
 
 // ConBee
-Dimmer Con_Light_Dimmer "Con Light Dimmer" <wallswitch> (BedroomBulb) ["Light"] { 
+Dimmer Con_Light_Dimmer "Con Light Dimmer" <wallswitch> (Lights) ["Control", "Light"] { 
     channel="deconz:dimmablelight:homeserver:tradfor:brightness"
 }
 
 // Z-Stick
 //Door Sensor
-Contact Door_Sensor "Door Sensor" <frontdoor> (Z_Stick, GroundFloor) ["Measurement", "Presence"] { 
+Contact Door_Sensor "Door Sensor" <frontdoor> (Z_Stick) ["Measurement", "Presence", "MotionDetector"] { 
     channel="zwave:fibaro_fgdw002_00_000:controller:door_sensor:sensor_door" 
 }
-Number Door_Sensor_Battery "Door Sensor Battery [%.2f %%]" <batterylevel> (Z_Stick, FirstFloor) ["Measurement", "Energy"] { 
+Number Door_Sensor_Battery "Door Sensor Battery [%.2f %%]" <batterylevel> (Z_Stick) ["Measurement", "Energy"] { 
     channel="zwave:fibaro_fgdw002_00_000:controller:door_sensor:battery-level"
 }
 //Motion Sensor
-Switch Motion_Alarm "Motion Alarm" <motion> (Z_Stick, FirstFloor) ["MotionDetector"] { 
+Switch Motion_Alarm "Motion Alarm" <motion> (Z_Stick) ["Measurement", "Presence", "MotionDetector"] { 
     channel="zwave:fibaro_fgms001_03_002:controller:motion_sensor:alarm_motion"
 }
-Number Motion_Alarm_Battery "Motion Alarm Battery [%.2f %%]" <batterylevel> (Z_Stick, FirstFloor) ["Measurement", "Energy"] { 
+Number Motion_Alarm_Battery "Motion Alarm Battery [%.2f %%]" <batterylevel> (Z_Stick) ["Measurement", "Energy"] { 
     channel="zwave:fibaro_fgms001_03_002:controller:motion_sensor:battery-level"
 }
 //Wallmote Quad
-Number WallMote_Button "WallMote Quad [%s]" <wallswitch> (Z_Stick, LivingRoom) ["Prensence"] { 
+Number WallMote_Button "WallMote Quad [%s]" <wallswitch> (Z_Stick) ["Alarm", "Presence"] { 
     channel="zwave:aeon_zw130_00_000:controller:wallmote:scene_number" 
 }
 //Siren
-Switch Siren "Siren" <alarm> (Z_Stick, LivingRoom) ["Presence"] { 
+Switch Siren "Siren" <alarm> (Z_Stick) ["Alarm", "Presence"] { 
     channel="zwave:aeon_dsd31_00_000:controller:siren:switch_binary" 
 }
 //Nano Dimmer
-Dimmer Dime "Dimmer" <temperature> (Z_Stick, LivingRoom) ["ColorTemperature"] { 
+Dimmer Dime "Dimmer" <temperature> (Z_Stick) ["Control", "ColorTemperature"] { 
     channel="zwave:aeon_zw111_02_003:controller:nano_dimmer:switch_dimmer" 
 }
 
@@ -151,13 +148,13 @@ String XBeeBinary "XBee Binary" <light> (XBee) {
     channel="serial:serialBridge:xbeesensors:binary"
 }
 //For analysis
-Switch XBeeMode_Automatic "Automatic Mode" <switch> (XBee)
-Switch XBeeMode_Manual "Manual Mode" <switch> (XBee)
-Switch XBeeMove_Forward "Go Forward (Clock Wise)" <movecontrol> (XBee)
-Switch XBeeMove_Reverse "Reverse (Counter Clock Wise)" <movecontrol> (XBee)
-Switch XBeeMove_Left "Move Left" <movecontrol> (XBee)
-Switch XBeeMove_Right "Move Right" <movecontrol> (XBee)
-Number XBeeSpeed_Roomba "Roomba Speed (0-9)" <motion> (XBee)
-Number XBeeSpeed_Current "Current Speed [%d]" <motion> (XBee)
-String XBeeSensor_Horizontal "Horizontal Sensor [%d cm]" <projector> (XBee)
-String XBeeSensor_Vertical "Vertical Sensor [%d cm]" <projector> (XBee)
+Switch XBeeMode_Automatic "Automatic Mode" <switch> (XBee) ["Control"]
+Switch XBeeMode_Manual "Manual Mode" <switch> (XBee) ["Control"]
+Switch XBeeMove_Forward "Go Forward (Clock Wise)" <movecontrol> (XBee) ["Control"]
+Switch XBeeMove_Reverse "Reverse (Counter Clock Wise)" <movecontrol> (XBee) ["Control"]
+Switch XBeeMove_Left "Move Left" <movecontrol> (XBee) ["Control"]
+Switch XBeeMove_Right "Move Right" <movecontrol> (XBee) ["Control"]
+Number XBeeSpeed_Roomba "Roomba Speed (0-9)" <motion> (XBee) ["Control"]
+Number XBeeSpeed_Current "Current Speed [%d]" <motion> (XBee) ["Control"]
+String XBeeSensor_Horizontal "Horizontal Sensor [%d cm]" <projector> (XBee) ["Measurement"]
+String XBeeSensor_Vertical "Vertical Sensor [%d cm]" <projector> (XBee) ["Measurement"]

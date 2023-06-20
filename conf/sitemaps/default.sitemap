@@ -1,30 +1,27 @@
 sitemap default label="Main Menu" {
     // For Testing Purposes
-    Frame label="Testing Laboratory" {
+    Frame label="Device" {
         Default item=MyDeviceIsOnline
-
         Default item=Outlet_Switch
-
         Default item=Telegram_Message
-
+    }
+    Frame label="Calendar & Weather" {
         Default item=Current_Event
         Default item=Current_Event_Start
         Default item=Current_Event_End
-
         Default item=Sunset_Time
-
         Default item=LocalCurrent_Condition
         Default item=LocalCurrent_RainVolume
-
-        Default item=Test_Switch
-
+    }
+    Frame label="Lights" {
         Default item=Hue_Switch
         Default item=Hue_Scene
         Default item=Hue_Color
         Default item=Hue_Dimmer_Switch
         Default item=Hue_Color_Temperature
         Default item=Con_Light_Dimmer
-
+    }
+    Frame label="Sensors" {
         Default item=Door_Sensor
         Default item=Door_Sensor_Battery
         Default item=Motion_Alarm
@@ -36,7 +33,8 @@ sitemap default label="Main Menu" {
         Default item=LoRa_AirTemperature
         Default item=LoRa_AirHumidity
         Default item=LoRa_BatteryLevel
-
+    }
+    Frame label="Roomba" {
         Default item=XBeeString
         Default item=XBeeBinary
         Switch item=XBeeMode_Automatic
@@ -49,17 +47,5 @@ sitemap default label="Main Menu" {
         Text item=XBeeSpeed_Current
         Text item=XBeeSensor_Horizontal
         Text item=XBeeSensor_Vertical    
-    }
-    Frame label="XBee" icon="shield" {
-        Switch item=XBeeMode_Automatic
-        Switch item=XBeeMode_Manual
-        Switch item=XBeeMove_Forward
-        Switch item=XBeeMove_Reverse
-        Switch item=XBeeMove_Left
-        Switch item=XBeeMove_Right
-        Slider item=XBeeSpeed_Roomba minValue=0 maxValue=9 step=1
-        Text item=XBeeSpeed_Current
-        Text item=XBeeSensor_Horizontal
-        Text item=XBeeSensor_Vertical
     }
 }

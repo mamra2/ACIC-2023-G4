@@ -93,58 +93,54 @@ rule "Control Hue Color Temperature (with dimmer switch)"
         }
 end
 
-// Pending Testing (To remove)
-rule "Door Sensor State Update"
-    when 
-        Item Door_Sensor received update
-    then
-        logInfo("Door_Sensor", Door_Sensor.state.toString)
-end
-
-// Pending Testing (Check Con Dimmer)
-rule "Motion Alarm Triggered"
+// Z-Stick
+rule "Intruder Alert"
     when
-        Item Test_Switch changed
-//        Item Motion_Alarm changed or
-//        Item Door_Sensor.state.toString == "open"
+        Item Motion_Alarm changed or
+        Item Door_Sensor changed
     then
-        if (Test_Switch.state == ON) {
+        var brightness = 0
+        if (Motion_Alarm.state == ON || Door_Sensor.state.toString == "OPEN") {
+            brightness = 50
             telegramBot.sendTelegram("INTRUDER ALERT!")
-            Con_Light_Dimmer.sendCommand(50)
             changeColorToRed.apply()
-        }
-        if (Test_Switch.state == OFF)
-            Con_Light_Dimmer.sendCommand(0)
+        } else brightness = 0
+        Con_Light_Dimmer.sendCommand(brightness)
+        Dime.sendCommand(brightness)
         Hue_Switch.sendCommand(Motion_Alarm.state.toString)
-        Siren.sendCommand(Motion_Alarm.state.toString)
+        // Requested disabling Siren
+        //Siren.sendCommand(Motion_Alarm.state.toString)
 end
-
-//TODO: Chuva mandar notificação para levar guarda-chuva
-//TODO: Wallmote Quad e Nano Dimmer
-//TODO: Avisar quando tiver a 20% bateria [Door Sensor, Motion Sensor, LoRa] (E-mail)
 
 rule "Battery Warning"
     when
-//        Item Test_Switch received update
-//        Item Door_Sensor_Battery < 20 or
-//        Item Motion_Alarm_Battery < 20 or
-//        Item LoRa_BatteryLevel == "0-20%"
+        Item Door_Sensor_Battery changed or
+        Item Motion_Alarm_Battery changed or
+        Item LoRa_BatteryLevel changed
     then
-        logInfo("BatteryWarning", "WARNING: \"Battery is low and it's getting dark!\"")
-        telegramBot.sendTelegram("WARNING: \"Battery is low and it's getting dark!\"\nYou should replace it.")
+        if (Door_Sensor_Battery.state < 20.0 || Motion_Alarm.state < 20.0 || LoRa_BatteryLevel.state.toString == "0-20%")
+            telegramBot.sendTelegram("WARNING: \"Battery is low and it's getting dark!\"\nYou should replace it.")
 end
 
 rule "Rain Warning"
     when
-        Item Test_Switch received update
-//        Item LocalCurrent_RainVolume.state < 0.1
-//        Item LocalCurrent_RainVolume.state > 0.3|mm
+        Item LocalCurrent_Condition changed
     then
-        logInfo("RainWarning", "WARNING: It's raining. Leva chapéu.")
-        //telegramBot.sendTelegram("WARNING: It's raining. Leva chapéu.")
+        if (LocalCurrent_Condition.state.toString == "rain")
+            telegramBot.sendTelegram("WARNING: It's raining. Leva chapéu.")
 end
 
-
+rule "Change Roomba setup (with Wallmote Quad)"
+    when
+        Item WallMote_Button received update
+    then
+    switch(WallMote_Button.state) {
+        case 1.0: XBeeMode_Automatic.sendCommand(ON)
+        case 2.0: XBeeMode_Manual.sendCommand(ON)
+        case 3.0: XBeeMove_Forward.sendCommand(ON)
+        case 4.0: XBeeMove_Reverse.sendCommand(ON)
+    }
+end
 
 rule "Start cleaning when event starts"
     when 

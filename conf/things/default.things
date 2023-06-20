@@ -26,7 +26,7 @@ Thing mail:smtp:smtp "Mail" [
     password="vhjy fdes hyxa mmev" 
 ]
 
-// iCalendar
+// Calendar
 Bridge icalendar:calendar:calendar "Calendar" [ 
     url="https://calendar.google.com/calendar/ical/97f66fc43744e1669df8853d48ffa122f967981fe48e99e4e695fec15b694a03%40group.calendar.google.com/private-c12a37af67ac93f6a7456967a676c2cc/basic.ics", 
     refreshTime=5 
@@ -60,7 +60,7 @@ Bridge openweathermap:weather-api:api "OpenWeatherMap" [
 
 // Hue
 Bridge hue:bridge:mybridge "Hue | Bridge" [ 
-    ipAddress="192.168.1.245", 
+    ipAddress="192.168.8.193", 
     userName="qi52KySKTZ9dBb3lYkSCi17povASXFGsxqT3-qmH",
     protocol="http"
 ] { 
@@ -72,7 +72,7 @@ Bridge hue:bridge:mybridge "Hue | Bridge" [
 
 // ConBee
 Bridge deconz:deconz:homeserver "ConBee" [ 
-    host="192.168.1.94", 
+    host="192.168.8.128", 
     apikey="F58F8E5B05"
 ] { 
     dimmablelight tradfor "ConBee | Tradfor" [id="2"]
@@ -80,7 +80,7 @@ Bridge deconz:deconz:homeserver "ConBee" [
 
 // Z-Stick
 Bridge zwave:serial_zstick:controller "Z-Wave" [ 
-    port="COM4", // Check port
+    port="COM7", // Check port
     controller_softreset="false", 
     controller_master="true", 
     heal_enable="true", 
@@ -119,7 +119,7 @@ Thing mqtt:topic:generic "MQTT | Topic" (mqtt:broker:broker) {
 
 // XBee
 Bridge serial:serialBridge:xbeesensors "XBee" [ 
-    serialPort="COM4", // Check port
+    serialPort="COM5", // Check port
     baudRate=9600, 
     dataBits=8, 
     parity="N", 
