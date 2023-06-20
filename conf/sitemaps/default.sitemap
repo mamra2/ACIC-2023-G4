@@ -2,6 +2,7 @@ sitemap default label="Main Menu" {
     // For Testing Purposes
     Frame label="Device" {
         Default item=MyDeviceIsOnline
+        Default item=Wallplug_Hall
         Default item=Outlet_Switch
         Default item=Telegram_Message
     }

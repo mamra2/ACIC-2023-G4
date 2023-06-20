@@ -19,6 +19,19 @@ rule "Toggle Wallplug"
         Wallplug_Hall.sendCommand(MyDeviceIsOnline.state.toString)
 end
 
+// Calendar
+rule "Start cleaning when event starts"
+    when 
+        Item Telegram_Message received update "Cleaning started" or
+        Item Telegram_Message received update "Cleaning ended"
+    then
+        XBeeMode_Automatic.sendCommand(ON)
+        telegramBot.sendTelegram(Outlet_Switch.name + "'s state was set to " + Outlet_Switch.state.toString + ", as expected.")
+        telegramBot.sendTelegram("The message defined in the calendar event's description was \n\"" + Telegram_Message.state.toString + "\"")
+        telegramBot.sendTelegramQuery("Do you also want to receive a notification through other services?", "Telegram_Reply", "Send e-mail", "Send IFTTT", "No, thanks")
+end
+
+// Telegram
 rule "Reply (on Telegram)"
     when
         Item Telegram_ReplyId received update "Telegram_Reply"
@@ -33,7 +46,7 @@ end
 
 // Mail
 rule "Send e-mail"
-    when 
+    when
         Item Telegram_Message received update "Send e-mail"
     then
         var item = Outlet_Switch
@@ -81,6 +94,15 @@ rule "Sunset changes lights' scene"
         logInfo("HueScene", "Philips Hue lights changed scene to \"{}\"", sceneName)
 end
 
+// OpenWeather
+rule "Rain Warning"
+    when
+        Item LocalCurrent_Condition changed
+    then
+        if (LocalCurrent_Condition.state.toString == "rain")
+            telegramBot.sendTelegram("WARNING: It's raining. Leva chapéu.")
+end
+
 // Hue
 rule "Control Hue Color Temperature (with dimmer switch)"
     when
@@ -122,14 +144,6 @@ rule "Battery Warning"
             telegramBot.sendTelegram("WARNING: \"Battery is low and it's getting dark!\"\nYou should replace it.")
 end
 
-rule "Rain Warning"
-    when
-        Item LocalCurrent_Condition changed
-    then
-        if (LocalCurrent_Condition.state.toString == "rain")
-            telegramBot.sendTelegram("WARNING: It's raining. Leva chapéu.")
-end
-
 rule "Change Roomba setup (with Wallmote Quad)"
     when
         Item WallMote_Button received update
@@ -140,17 +154,6 @@ rule "Change Roomba setup (with Wallmote Quad)"
         case 3.0: XBeeMove_Forward.sendCommand(ON)
         case 4.0: XBeeMove_Reverse.sendCommand(ON)
     }
-end
-
-rule "Start cleaning when event starts"
-    when 
-        Item Telegram_Message received update "Cleaning started" or
-        Item Telegram_Message received update "Cleaning ended"
-    then
-        XBeeMode_Automatic.sendCommand(ON)
-        telegramBot.sendTelegram(Outlet_Switch.name + "'s state was set to " + Outlet_Switch.state.toString + ", as expected.")
-        telegramBot.sendTelegram("The message defined in the calendar event's description was \n\"" + Telegram_Message.state.toString + "\"")
-        telegramBot.sendTelegramQuery("Do you also want to receive a notification through other services?", "Telegram_Reply", "Send e-mail", "Send IFTTT", "No, thanks")
 end
 
 // XBee
