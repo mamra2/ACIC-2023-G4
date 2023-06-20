@@ -1,29 +1,54 @@
 sitemap default label="Main Menu" {
     // For Testing Purposes
     Frame label="Testing Laboratory" {
-        Switch item=Test_Switch
-        Text item=MyDeviceIsOnline
-        Switch item=Wallplug_Hall
-        Default item=Telegram_Message
-    }
-    Frame label="Lights" icon="light" {
+        Default item=MyDeviceIsOnline
+
         Default item=Outlet_Switch
-        Group item=Z_Stick
-        Group item=BedroomBulb
-        Switch item=Hue_Switch
-        Selection item=Hue_Scene
-            mappings=[
-                1="Galaxy",
-                2="Starlight", 
-                3="Tokyo"
-            ]
-        Slider item=Hue_Color_Temperature
-    }
-    Frame label="Services" icon="mediacontrol" {
-        Group item=AlarmSystem
-    }
-    Frame label="Device" icon="projector" {
-        Group item=Home
+
+        Default item=Telegram_Message
+
+        Default item=Current_Event
+        Default item=Current_Event_Start
+        Default item=Current_Event_End
+
+        Default item=Sunset_Time
+
+        Default item=LocalCurrent_Condition
+        Default item=LocalCurrent_RainVolume
+
+        Default item=Test_Switch
+
+        Default item=Hue_Switch
+        Default item=Hue_Scene
+        Default item=Hue_Color
+        Default item=Hue_Dimmer_Switch
+        Default item=Hue_Color_Temperature
+        Default item=Con_Light_Dimmer
+
+        Default item=Door_Sensor
+        Default item=Door_Sensor_Battery
+        Default item=Motion_Alarm
+        Default item=Motion_Alarm_Battery
+        Default item=WallMote_Button
+        Default item=Siren
+        Default item=Dime
+
+        Default item=LoRa_AirTemperature
+        Default item=LoRa_AirHumidity
+        Default item=LoRa_BatteryLevel
+
+        Default item=XBeeString
+        Default item=XBeeBinary
+        Switch item=XBeeMode_Automatic
+        Switch item=XBeeMode_Manual
+        Switch item=XBeeMove_Forward
+        Switch item=XBeeMove_Reverse
+        Switch item=XBeeMove_Left
+        Switch item=XBeeMove_Right
+        Slider item=XBeeSpeed_Roomba minValue=0 maxValue=9 step=1
+        Text item=XBeeSpeed_Current
+        Text item=XBeeSensor_Horizontal
+        Text item=XBeeSensor_Vertical    
     }
     Frame label="XBee" icon="shield" {
         Switch item=XBeeMode_Automatic

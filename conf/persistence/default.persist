@@ -1,0 +1,7 @@
+Strategies {
+  
+}
+
+Items {
+  LoRa_AirTemperature: strategy = everyChange, restoreOnStartup
+}

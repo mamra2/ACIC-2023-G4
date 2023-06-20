@@ -17,15 +17,6 @@ Thing telegram:telegramBot:telegrambot "Telegram" [
     botToken="6015714713:AAHb3KgNHc1XvKgi6ZXAdELo46cg9slDcIw" 
 ]
 
-// Twitter
-Thing twitter:account:account "Twitter" [ 
-    consumerKey="nK5Je0enSZphazgMkrY4NiHvG", 
-    consumerSecret="GTBfpn9gKJhQRXbKf7fHgkJ7aQJ12fjMZki4zx0FfDyDX8jy0I", 
-    accessToken="715177321746014209-rNZQcerR5GiyYzHLYg3uuCUpBQeNVkO", 
-    accessTokenSecret="FHwTUTB6buneSN4iAs8PeFdaNrQfnwildADOJQsbV7kAz",
-    refresh=10
-]
-
 // Mail
 Thing mail:smtp:smtp "Mail" [ 
     hostname="smtp.gmail.com", 
@@ -69,7 +60,7 @@ Bridge openweathermap:weather-api:api "OpenWeatherMap" [
 
 // Hue
 Bridge hue:bridge:mybridge "Hue | Bridge" [ 
-    ipAddress="192.168.8.193", 
+    ipAddress="192.168.1.245", 
     userName="qi52KySKTZ9dBb3lYkSCi17povASXFGsxqT3-qmH",
     protocol="http"
 ] { 
@@ -81,7 +72,7 @@ Bridge hue:bridge:mybridge "Hue | Bridge" [
 
 // ConBee
 Bridge deconz:deconz:homeserver "ConBee" [ 
-    host="172.26.160.1", 
+    host="192.168.1.94", 
     apikey="F58F8E5B05"
 ] { 
     dimmablelight tradfor "ConBee | Tradfor" [id="2"]

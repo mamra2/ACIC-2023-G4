@@ -39,22 +39,13 @@ Switch Test_Switch "Test Switch" <switch> (Bathroom) ["WallSwitch"]
 
 // Device
 Switch Wallplug_Hall "Wallplug" <poweroutlet_us> (Home) ["WallSwitch"]
-Switch MyDeviceIsOnline "My Device" <network> (Device) ["Switch"] {
+Switch MyDeviceIsOnline "My Device" <network> (Device) ["Measurement", "Presence"] {
     channel="network:pingdevice:mydevice:online"
-}
-Number MyDeviceResponseTime "Latency [%s ms]" <projector> (Device) ["Measurement", "Presence"] {
-    channel="network:pingdevice:mydevice:latency"
-}
-DateTime MyDeviceLastSeen "Last Seen [%1$tT %1$td/%1$tm/%1$ty]" <camera> (Device) ["Measurement", "Presence", "Timestamp"] {
-    channel="network:pingdevice:mydevice:lastseen"
 }
 
 // TP-Link
 Switch Outlet_Switch "Outlet Power" <poweroutlet> (TP_Link) ["Switch", "Power"] {
     channel="tplinksmarthome:hs100:outlet:switch"
-}
-Number:Power Outlet_RSSI "Wi-Fi Signal [%d %unit%]" <network> (TP_Link) ["Switch", "Power"] {
-    channel="tplinksmarthome:hs100:outlet:rssi"
 }
 
 // Telegram
@@ -63,11 +54,6 @@ String Telegram_Message "Telegram Message" <text> (Telegram) ["Alarm"] {
 }
 String Telegram_ReplyId "Telegram Reply Id" <suitcase> (Telegram) ["Alarm"] { 
     channel = "telegram:telegramBot:telegrambot:replyId" 
-}
-
-// Twitter
-String Last_Tweet "Last Tweet" <text> (Twitter) ["Measurement", "Timestamp"] { 
-    channel="twitter:account:account:lasttweet"
 }
 
 // iCalendar
@@ -80,52 +66,23 @@ DateTime Current_Event_Start "Current Event start [%1$tR %1$ta %1$tF]" <time> (A
 DateTime Current_Event_End "Current Event end [%1$tR %1$ta %1$tF]" <time> (Activities) ["Alarm"] {
     channel="icalendar:calendar:calendar:current_end"
 }
-String Next_Event "Next Event" <calendar> (Activities) ["Alarm"] { 
-    channel="icalendar:calendar:calendar:next_title" 
-}
-DateTime Next_Event_Start "Next Event start [%1$tR %1$ta %1$tF]" <time> (Activities) ["Alarm"] {
-    channel="icalendar:calendar:calendar:next_start"
-}
-String FirstEvent_Tomorrow "First Event tomorrow" <calendar> (Activities) ["Alarm"] { 
-    channel="icalendar:eventfilter:filter:result_0#title" 
-}
-DateTime FirstEvent_Tomorrow_Start "First Event tomorrow start [%1$tR %1$ta %1$tF]" <time> (Activities) ["Alarm"] { 
-    channel="icalendar:eventfilter:filter:result_0#begin" 
-}
 
 // Astro
 DateTime Sunset_Time "Sunset Time [%1$tR %1$ta %1$tF]" <sunset> (Astro) ["Measurement", "Timestamp"] { 
-    channel="astro:sun:home:set#start" 
-}
-String Moon_Phase "Moon Phase" <moon> (Astro) ["Measurement", "Presence"] { 
-    channel="astro:moon:home:phase#name" 
-}
-Number Moon_Distance "Moon Distance [%.3f km]" <zoom> (Astro) ["Measurement", "Presence"] { 
-    channel="astro:moon:home:distance#distance" 
+    channel="astro:sun:home:set#start"
 }
 
 // OpenWeather
-Number:Speed LocalCurrent_WindSpeed "Wind speed [%.1f %unit%]" <wind> (OpenWeather) ["Measurement", "Wind"] { 
-    channel="openweathermap:weather-and-forecast:api:local:current#wind-speed" 
-}
-Number:Length LocalCurrent_RainVolume "Rain volume [%.2f %unit%]" <rain> (OpenWeather) ["Measurement", "Rain"] { 
-    channel="openweathermap:weather-and-forecast:api:local:current#rain" 
-}
-Number:Temperature LocalCurrent_Temperature "Temperature [%.1f %unit%]" <temperature> (OpenWeather) ["Measurement", "Temperature"] { 
-    channel="openweathermap:weather-and-forecast:api:local:current#temperature" 
-}
 String LocalCurrent_Condition "Condition for today" <sun_clouds> (OpenWeather) ["Measurement", "Presence"] { 
     channel="openweathermap:weather-and-forecast:api:local:current#condition" 
 }
-Image LocalCurrent_ConditionIcon "Condition for today (Icon)" <sun_clouds> (OpenWeather) ["Measurement", "Presence"] { 
-    channel="openweathermap:weather-and-forecast:api:local:current#icon" 
+Number:Length LocalCurrent_RainVolume "Rain volume [%.2f %unit%]" <rain> (OpenWeather) ["Measurement", "Rain"] { 
+    channel="openweathermap:weather-and-forecast:api:local:current#rain" 
 }
 
 // Hue
 Switch Hue_Switch "Hue Light Switch" <wallswitch> (BedroomBulb) ["Switch"] { 
     channel="hue:group:mybridge:bedroom_bulbs:switch"
-//    channel="hue:0210:mybridge:bulb_color:color",
-//    channel="hue:0220:mybridge:bulb_ambiance:brightness"
 }
 String Hue_Scene "Hue Scene" <rgb> (BedroomBulb) ["Control", "Light"] { 
     channel="hue:bridge:mybridge:scene"
@@ -142,7 +99,7 @@ Number Hue_Dimmer_Switch "Hue Dimmer Switch" <wallswitch> (BedroomBulb) ["Contro
 }
 
 // ConBee
-Dimmer Con_Light_Dimmer "Con Light Dimmer" <wallswitch> (BedroomBulb) ["ColorTemperature"] { 
+Dimmer Con_Light_Dimmer "Con Light Dimmer" <wallswitch> (BedroomBulb) ["Light"] { 
     channel="deconz:dimmablelight:homeserver:tradfor:brightness"
 }
 
@@ -161,15 +118,9 @@ Switch Motion_Alarm "Motion Alarm" <motion> (Z_Stick, FirstFloor) ["MotionDetect
 Number Motion_Alarm_Battery "Motion Alarm Battery [%.2f %%]" <batterylevel> (Z_Stick, FirstFloor) ["Measurement", "Energy"] { 
     channel="zwave:fibaro_fgms001_03_002:controller:motion_sensor:battery-level"
 }
-Number Motion_Alarm_Temperature "Motion Alarm Temperature [%.2f %unit%]" <temperature> (Z_Stick, FirstFloor) ["Measurement", "Temperature"] { 
-    channel="zwave:fibaro_fgms001_03_002:controller:motion_sensor:sensor_temperature"
-}
 //Wallmote Quad
 Number WallMote_Button "WallMote Quad [%s]" <wallswitch> (Z_Stick, LivingRoom) ["Prensence"] { 
     channel="zwave:aeon_zw130_00_000:controller:wallmote:scene_number" 
-}
-Switch WallMote_Button1 "WallMote Quad Button 1" <wallswitch> (Z_Stick, LivingRoom) ["Measurement", "Presence"] { 
-    channel="zwave:aeon_zw130_00_000:controller:wallmote:basic_switch_binary1" 
 }
 //Siren
 Switch Siren "Siren" <alarm> (Z_Stick, LivingRoom) ["Presence"] { 
@@ -178,9 +129,6 @@ Switch Siren "Siren" <alarm> (Z_Stick, LivingRoom) ["Presence"] {
 //Nano Dimmer
 Dimmer Dime "Dimmer" <temperature> (Z_Stick, LivingRoom) ["ColorTemperature"] { 
     channel="zwave:aeon_zw111_02_003:controller:nano_dimmer:switch_dimmer" 
-}
-Number Dime_Voltage "Voltage [%s]" <energy> (Z_Stick, LivingRoom) ["Energy"] { 
-    channel="zwave:aeon_zw111_02_003:controller:nano_dimmer:meter_voltage" 
 }
 
 // LoRa
